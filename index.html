@@ -1,0 +1,1490 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#022c22" />
+    <title>Övernatta – prototyp</title>
+    <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html, body { margin: 0; min-height: 100%; }
+      body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+      .app-loading { display: flex; justify-content: center; align-items: center; height: 100vh; color: #94a3b8; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <div id="root"><div class="app-loading">Laddar Övernatta …</div></div>
+    <script type="text/babel" data-presets="react">
+      const { useState } = React;
+
+      /* ---------- Ikoner (inline-SVG, ersätter nucleo-sharp) ---------- */
+
+      function IconWrap({ children, className }) {
+        return (
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+          >
+            {children}
+          </svg>
+        );
+      }
+
+      const AlertInfo = ({ className }) => (
+        <IconWrap className={className}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 11v5" />
+          <path d="M12 8h.01" />
+        </IconWrap>
+      );
+
+      const AlertWarning = ({ className }) => (
+        <IconWrap className={className}>
+          <path d="M12 4 21 19H3L12 4Z" />
+          <path d="M12 10v4" />
+          <path d="M12 17h.01" />
+        </IconWrap>
+      );
+
+      const Ban = ({ className }) => (
+        <IconWrap className={className}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M5.6 5.6 18.4 18.4" />
+        </IconWrap>
+      );
+
+      const Book = ({ className }) => (
+        <IconWrap className={className}>
+          <path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v18H6.5A1.5 1.5 0 0 1 5 19.5V4.5Z" />
+          <path d="M8.5 3v18" />
+        </IconWrap>
+      );
+
+      const Check = ({ className }) => (
+        <IconWrap className={className}>
+          <path d="M5 13l4 4L19 7" />
+        </IconWrap>
+      );
+
+      const Clock = ({ className }) => (
+        <IconWrap className={className}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 2" />
+        </IconWrap>
+      );
+
+      const HousePin = ({ className }) => (
+        <IconWrap className={className}>
+          <path d="M4 11.5 12 4l8 7.5" />
+          <path d="M6.5 10v10h11V10" />
+          <circle cx="12" cy="14.5" r="1.6" />
+        </IconWrap>
+      );
+
+      const Map = ({ className }) => (
+        <IconWrap className={className}>
+          <path d="M3 6.2 9 4l6 2 6-2v13.8l-6 2-6-2-6 2V6.2Z" />
+          <path d="M9 4v14" />
+          <path d="M15 6v14" />
+        </IconWrap>
+      );
+
+      const MapPin = ({ className }) => (
+        <IconWrap className={className}>
+          <path d="M12 21.5S5 16.2 5 10a7 7 0 1 1 14 0c0 6.2-7 11.5-7 11.5Z" />
+          <circle cx="12" cy="10" r="2.5" />
+        </IconWrap>
+      );
+
+      const Navigation = ({ className }) => (
+        <IconWrap className={className}>
+          <path d="M12 3l7 17.5-7-4-7 4L12 3Z" />
+        </IconWrap>
+      );
+
+      const PinPlus = ({ className }) => (
+        <IconWrap className={className}>
+          <path d="M12 21.5S5 16.2 5 10a7 7 0 1 1 14 0c0 6.2-7 11.5-7 11.5Z" />
+          <path d="M12 7.5v5" />
+          <path d="M9.5 10h5" />
+        </IconWrap>
+      );
+
+      const ClockRotate = ({ className }) => (
+        <IconWrap className={className}>
+          <path d="M4.5 12a7.5 7.5 0 1 1 2.3 5.4" />
+          <path d="M4.5 17.8v-4.6H9" />
+          <circle cx="12" cy="12" r="3" />
+        </IconWrap>
+      );
+/* ---------- Data ---------- */
+
+const LOCATIONS = [
+  {
+    id: "gavle-skeppsbron",
+    label: "Södra Skeppsbron, Gävle (ställplats)",
+    place: "Södra Skeppsbron",
+    kommun: "Gävle kommun",
+    geo: { tatort: "Gävle", befolkning: "86 533" },
+    status: "ok",
+    verdict: "Ja – här kan du övernatta",
+    explanation:
+      "Du står på en av Gävles officiella ställplatser, nio platser intill Gavleån med gångavstånd till centrum.",
+    chips: ["Ställplats", "300 kr/dygn", "Max 48 timmar", "Servicebyggnad"],
+    reasons: [
+      "Platsen är av kommunen upplåten för husbilar – övernattning är huvudsyftet.",
+      "Betalning sker via app eller automat (zonkod 1513).",
+      "Latrintömning och vatten finns på platsen.",
+    ],
+    source: "Gävle Parkeringsservice – gavleparkering.se",
+    dataSource: "Kommunens parkeringsbolag (webb)",
+    hasOpenData: false,
+    stadga: {
+      stance: "Reglerat",
+      stanceDetail:
+        "Camping är förbjuden på offentlig plats inom detaljplanelagt område (17 §). Övernattning i lagligt parkerat fordon nämns inte i föreskrifterna – vanlig tolkning är att parkering utan upplägg inte är camping.",
+      paragraphs: [
+        {
+          ref: "Lokala ordningsföreskrifterna 17 §",
+          text: "“Camping får inte ske på offentlig plats inom detaljplanelagt område, annat än i samband med tillåten camping.”",
+        },
+        {
+          ref: "Tolkning",
+          text: "Till skillnad från t.ex. Halmstad jämför inte Gävle övernattning i fordon med camping. Parkerad husbil utan markis/stolar bedöms som parkering.",
+        },
+        {
+          ref: "Lokala trafikföreskrifter (parkering)",
+          text: "Parkering regleras gata för gata: t.ex. max 4 timmar på Andra Magasinsgatan (2025:114) och förbudsområdet Öster/Magasinsområdet (2017:357).",
+        },
+        {
+          ref: "Trafikförordningen 3 kap. 49 a §",
+          text: "Parkering på allmän plats i tätbebyggt område tillåten i 24 timmar.",
+        },
+      ],
+      link: "gavle.se – lokala ordningsföreskrifter · Svensk trafikföreskriftssamling",
+    },
+    nearby: [
+      { name: "Södra Skeppsbron", distance: "Här är du", price: "300 kr/dygn" },
+      { name: "Culinar ställplats", distance: "ca 1,1 km", price: "300 kr/dygn · el" },
+      { name: "Godisfabriken", distance: "ca 2,3 km", price: "300 kr/dygn · el" },
+    ],
+    mapPins: [
+      { id: "p1", kind: "stallplats", name: "Södra Skeppsbron", note: "9 platser · 300 kr/dygn · max 48 h", x: 50, y: 62 },
+      { id: "p2", kind: "stallplats", name: "Culinar", note: "13 platser · el", x: 63, y: 40 },
+      { id: "p3", kind: "stallplats", name: "Godisfabriken", note: "8 platser · 300 kr/dygn · el", x: 30, y: 30 },
+      { id: "p4", kind: "rapport", name: "Rapport: ICA-parkeringen, Valbo", note: "“Övernattat här två nätter, ingen skylt.” – Anna, sep 2026", x: 78, y: 72 },
+    ],
+  },
+  {
+    id: "gavle-centrum",
+    label: "Brynäsgatan, Gävle (gästparkering)",
+    place: "Brynäsgatan",
+    kommun: "Gävle kommun",
+    geo: { tatort: "Gävle", befolkning: "86 533" },
+    status: "check",
+    verdict: "Troligen ok – kontrollera skyltning",
+    explanation:
+      "Gästparkering med avgift dagtid. Övernattning är inte förbjuden i Gävles ordningsstadga, men många centrala parkeringar är skyltade enbart för personbil klass 1 – kontrollera skylten vid platsen.",
+    chips: ["24-timmarsregeln", "PB1-skyltar vanliga", "Avgift 06–19"],
+    reasons: [
+      "Parkering på allmän plats i tätbebyggt område är normalt tillåten i 24 timmar.",
+      "Skylt “personbil klass 1” utesluter husbil/husvagn på den platsen.",
+      "Gävles ordningsföreskrifter förbjuder camping inom detaljplanelagt område (17 §), men säger inte att övernattning i parkerat fordon är camping.",
+    ],
+    source: "Trafikförordningen 3 kap. 49 a § + lokal skyltning",
+    dataSource: "Manuellt granskad ordningsstadga",
+    hasOpenData: false,
+    stadga: {
+      stance: "Reglerat",
+      stanceDetail:
+        "Camping är förbjuden på offentlig plats inom detaljplanelagt område (17 §). Övernattning i lagligt parkerat fordon nämns inte i föreskrifterna – vanlig tolkning är att parkering utan upplägg inte är camping.",
+      paragraphs: [
+        {
+          ref: "Lokala ordningsföreskrifterna 17 §",
+          text: "“Camping får inte ske på offentlig plats inom detaljplanelagt område, annat än i samband med tillåten camping.”",
+        },
+        {
+          ref: "Tolkning",
+          text: "Till skillnad från t.ex. Halmstad jämför inte Gävle övernattning i fordon med camping. Parkerad husbil utan markis/stolar bedöms som parkering.",
+        },
+        {
+          ref: "Lokala trafikföreskrifter (parkering)",
+          text: "Parkering regleras gata för gata: t.ex. max 4 timmar på Andra Magasinsgatan (2025:114) och förbudsområdet Öster/Magasinsområdet (2017:357).",
+        },
+        {
+          ref: "Trafikförordningen 3 kap. 49 a §",
+          text: "Parkering på allmän plats i tätbebyggt område tillåten i 24 timmar.",
+        },
+      ],
+      link: "gavle.se – lokala ordningsföreskrifter · Svensk trafikföreskriftssamling",
+    },
+    nearby: [
+      { name: "Södra Skeppsbron", distance: "ca 0,9 km", price: "300 kr/dygn" },
+      { name: "Culinar ställplats", distance: "ca 1,1 km", price: "300 kr/dygn · el" },
+      { name: "Godisfabriken", distance: "ca 2,3 km", price: "300 kr/dygn · el" },
+    ],
+    mapPins: [
+      { id: "p1", kind: "stallplats", name: "Södra Skeppsbron", note: "9 platser · 300 kr/dygn · max 48 h", x: 45, y: 70 },
+      { id: "p2", kind: "stallplats", name: "Culinar", note: "13 platser · el", x: 60, y: 48 },
+      { id: "p3", kind: "stallplats", name: "Godisfabriken", note: "8 platser · 300 kr/dygn · el", x: 27, y: 25 },
+    ],
+  },
+  {
+    id: "hemlingby-stugan",
+    label: "Hemlingbystugan, Gävle (friluftsområdet)",
+    place: "Hemlingbyvägen 93, Hemlingbyberget",
+    kommun: "Gävle kommun",
+    geo: { tatort: null },
+    status: "ok",
+    verdict: "Ja – utanför detaljplan, campingförbudet gäller inte",
+    explanation:
+      "Parkeringen vid Hemlingbystugan ligger i Hemlingby friluftsområde, utanför tätort och detaljplanelagt område. Gävles campingförbud (17 §) gäller bara inom detaljplanelagt område – här är övernattning i parkerad husbil därför tillåten. Platsen är dessutom en registrerad ställplats.",
+    chips: ["Avgiftsfri", "Max 3 dagar", "Toalett & vatten", "Året runt"],
+    reasons: [
+      "Geo-kontroll (SCB 2023, punkt-i-polygon): positionen ligger UTANFÖR tätort Gävle – detaljplansregeln är inte tillämplig.",
+      "Gävles 17 § förbjuder bara camping på offentlig plats inom detaljplanelagt område – friluftsområdet omfattas inte.",
+      "Registrerad ställplats: avgiftsfri parkering i max tre dagar, toalett och dricksvatten när stugan har öppet.",
+    ],
+    source: "SCB Statistiska tätorter 2023 · gavle.se · husbil.se",
+    dataSource: "Geo-kontroll + ställplatsregister",
+    hasOpenData: false,
+    stadga: {
+      stance: "Reglerat",
+      stanceDetail:
+        "Camping är förbjuden på offentlig plats inom detaljplanelagt område (17 §). Övernattning i lagligt parkerat fordon nämns inte i föreskrifterna – vanlig tolkning är att parkering utan upplägg inte är camping.",
+      paragraphs: [
+        {
+          ref: "Lokala ordningsföreskrifterna 17 §",
+          text: "“Camping får inte ske på offentlig plats inom detaljplanelagt område, annat än i samband med tillåten camping.”",
+        },
+        {
+          ref: "Tolkning",
+          text: "Till skillnad från t.ex. Halmstad jämför inte Gävle övernattning i fordon med camping. Parkerad husbil utan markis/stolar bedöms som parkering.",
+        },
+        {
+          ref: "Trafikförordningen 3 kap. 49 a §",
+          text: "Parkering på allmän plats i tätbebyggt område tillåten i 24 timmar.",
+        },
+      ],
+      link: "gavle.se – lokala ordningsföreskrifter · Hemlingby friluftsområde",
+    },
+    nearby: [
+      { name: "Hemlingbystugan", distance: "Här är du", price: "Avgiftsfri · max 3 dagar" },
+    ],
+    mapPins: [
+      { id: "p1", kind: "stallplats", name: "Hemlingbystugan", note: "Avgiftsfri · max 3 dagar · toalett & vatten", x: 50, y: 62 },
+      { id: "p2", kind: "rapport", name: "Gräns: nedanför backen", note: "Ca 300 m norrut börjar detaljplan – övernattning inte tillåten där", x: 50, y: 34 },
+    ],
+  },
+  {
+    id: "hemlingby-backen",
+    label: "Parkering nedanför Hemlingbybacken, Gävle",
+    place: "Basen av Hemlingbybacken, Hemlingby",
+    kommun: "Gävle kommun",
+    geo: { tatort: "Gävle", befolkning: "86 533" },
+    status: "forbidden",
+    verdict: "Nej – inom detaljplanelagt område",
+    explanation:
+      "Bara några hundra meter norr om Hemlingbystugan, nedanför backen, har du passerat in i Hemlingby bebyggelse och kommunens detaljplanelagda område. Här är camping på offentlig plats förbjuden enligt 17 § – övernattning med husbil tillåts inte, trots att stugparkeringen alldeles söderut är helt fri.",
+    chips: ["17 § campingförbud", "Detaljplan Hemlingby", "Gräns ca 300 m söderut"],
+    reasons: [
+      "Geo-kontroll: tätorts-/detaljplansgränsen går i en ojämn zon ca 150–300 meter söder om parkeringen (verifierad med punktsökning var 10:e meter).",
+      "Inom detaljplanelagt område är camping på offentlig plats förbjuden enligt Gävles lokala ordningsföreskrifter 17 §.",
+      "Samma kommun, två svar: stugparkeringen 300 m söderut är utanför detaljplan och tillåten – det är precis den här skillnaden appen finns för.",
+    ],
+    source: "SCB Statistiska tätorter 2023 (gränszon verifierad) · gavle.se",
+    dataSource: "Geo-kontroll (gränszon) + lokal kännedom",
+    hasOpenData: false,
+    stadga: {
+      stance: "Reglerat",
+      stanceDetail:
+        "Camping är förbjuden på offentlig plats inom detaljplanelagt område (17 §). Övernattning i lagligt parkerat fordon nämns inte i föreskrifterna – vanlig tolkning är att parkering utan upplägg inte är camping.",
+      paragraphs: [
+        {
+          ref: "Lokala ordningsföreskrifterna 17 §",
+          text: "“Camping får inte ske på offentlig plats inom detaljplanelagt område, annat än i samband med tillåten camping.”",
+        },
+        {
+          ref: "Tolkning",
+          text: "Inom detaljplan är campingförbudet tillämpligt. Här går detaljplansgränsen mellan stugparkeringen (utanför) och backens bas (inom).",
+        },
+        {
+          ref: "Trafikförordningen 3 kap. 49 a §",
+          text: "Parkering på allmän plats i tätbebyggt område tillåten i 24 timmar.",
+        },
+      ],
+      link: "gavle.se – lokala ordningsföreskrifter · Hemlingby friluftsområde",
+    },
+    nearby: [
+      { name: "Hemlingbystugan", distance: "ca 300 m söderut", price: "Avgiftsfri · max 3 dagar" },
+    ],
+    mapPins: [
+      { id: "p1", kind: "stallplats", name: "Hemlingbystugan", note: "Tillåten övernattning – utanför detaljplan (ca 300 m söderut)", x: 50, y: 68 },
+    ],
+  },
+  {
+    id: "halmstad-centrum",
+    label: "Stortorget, Halmstad (centrum)",
+    place: "Stortorget",
+    kommun: "Halmstads kommun",
+    geo: { tatort: "Halmstad", befolkning: "72 979" },
+    status: "forbidden",
+    verdict: "Nej – övernattning förbjuden",
+    explanation:
+      "Halmstads lokala ordningsstadga förbjuder camping och därmed jämställd övernattning i fordon på offentlig plats. Övernatta i husbilen räknas här som camping.",
+    chips: ["Ordningsstadga §15", "Endast upplåtna platser", "Kan beivras"],
+    reasons: [
+      "Ordningsstadgan: camping och därmed jämställd övernattning i fordon får på offentlig plats endast äga rum på platser som kommunen upplåter.",
+      "Brott mot lokala ordningsstadgor kan föranleda föreläggande eller avgift.",
+      "Betalda parkeringar i centrala Halmstad upplåts inte för husbilar över natten.",
+    ],
+    source: "Halmstads kommuns lokala ordningsstadga § 15",
+    dataSource: "Manuellt granskad ordningsstadga",
+    hasOpenData: false,
+    stadga: {
+      stance: "Förbjudande",
+      stanceDetail:
+        "Ordningsstadgan jämnställer övernattning i fordon med camping på offentlig plats – endast platser som kommunen upplåter får användas.",
+      paragraphs: [
+        {
+          ref: "Ordningsstadgan § 15",
+          text: "“Camping liksom därmed jämställd övernattning i fordon får på offentlig plats endast äga rum på de platser eller områden, som kommunen upplåtit härför.”",
+        },
+        {
+          ref: "Trafikförordningen 3 kap. 49 a §",
+          text: "Grundregeln 24 timmars parkering gäller, men den lokala ordningsstadgan är strängare här.",
+        },
+      ],
+      link: "halmstad.se – lokala ordningsstadgar",
+    },
+    nearby: [
+      { name: "Halmstad Camping, Tylösand", distance: "ca 7 km", price: "Campingtaxa" },
+    ],
+    mapPins: [
+      { id: "p1", kind: "stallplats", name: "Halmstad Camping, Tylösand", note: "Camping · havsnära", x: 20, y: 78 },
+      { id: "p2", kind: "rapport", name: "Rapport: Stortorget", note: "“Vaktbolag knackade på 23:00 – hänvisade till camping.” – Per, aug 2026", x: 52, y: 52 },
+    ],
+  },
+  {
+    id: "goteborg-liseberg",
+    label: "Liseberg-området, Göteborg",
+    place: "Liseberg-området",
+    kommun: "Göteborgs kommun",
+    geo: { tatort: "Göteborg", befolkning: "674 529" },
+    status: "ok",
+    verdict: "Ja – inget förbud i ordningsstadgan",
+    explanation:
+      "Göteborg har inget förbud i sin ordningsstadga mot att sova över i ett lagligt parkerat fordon. Betala avgift och håll dig inom maxparkeringstiden.",
+    chips: ["Inget lokalt förbud", "24-timmarsregeln", "Betala avgiften"],
+    reasons: [
+      "Kommunen bekräftar: det finns inget förbud mot att sova i en lagligt parkerad bil.",
+      "Max 24 timmars parkering på allmän plats i tätbebyggt område.",
+      "Campingbeteende (markis, stolar, bord) är inte tillåtet på allmän plats.",
+    ],
+    source: "Göteborgs stad – ordningsstadga (svar från kommunen)",
+    dataSource: "Manuellt granskad ordningsstadga",
+    hasOpenData: false,
+    stadga: {
+      stance: "Tillåtande",
+      stanceDetail:
+        "Göteborgs stad har bekräftat att det inte finns något förbud i ordningsstadgan mot att sova i en lagligt parkerad bil. Camping är förbjuden på allmän plats.",
+      paragraphs: [
+        {
+          ref: "Lokal ordningsstadga",
+          text: "Inget förbud mot övernattning i lagligt parkerat fordon. Camping på allmän plats är förbjuden.",
+        },
+        {
+          ref: "Trafikförordningen 3 kap. 49 a §",
+          text: "Parkering på allmän plats i tätbebyggt område tillåten i 24 timmar.",
+        },
+      ],
+      link: "goteborg.se – ordningsstadga",
+    },
+    nearby: [],
+    mapPins: [
+      { id: "p1", kind: "rapport", name: "Rapport: Parkering vid Svenska Mässan", note: "“Övernattat här ok, betalade avgiften.” – Liselott, sep 2026", x: 48, y: 45 },
+    ],
+  },
+  {
+    id: "stockholm-hornstull",
+    label: "Hornsgatan, Stockholm (Södermalm)",
+    place: "Hornstull",
+    kommun: "Stockholms stad",
+    geo: { tatort: "Stockholm", befolkning: "1 652 895" },
+    status: "check",
+    verdict: "Kolla skyltar – områdesregler gäller",
+    explanation:
+      "Stockholms lokala trafikföreskrifter finns som öppna data. Många gator har nattförbud eller kortare maxtid. I riktiga appen slår vi upp exakt föreskrift för din adress.",
+    chips: ["Öppna data: Trafikkontoret", "Nattförbud vanligt", "Adressuppslag"],
+    reasons: [
+      "Trafikkontorets parkerings-API innehåller lokala trafikföreskrifter i maskinläsbart format.",
+      "Föreskrifterna varierar gata för gata – därför krävs exakt adressmatchning.",
+      "P-förbud eller max 2–24 h är vanligt på Södermalm.",
+    ],
+    source: "Trafikkontoret Stockholm – Parkerings API (öppna data)",
+    dataSource: "Kommunens öppna data-API (LTFR)",
+    hasOpenData: true,
+    stadga: {
+      stance: "Reglerat",
+      stanceDetail:
+        "Stockholm reglerar parkering via lokala trafikföreskrifter som finns som öppna data. Reglerna varierar gata för gata – appen slår upp exakt föreskrift för din adress.",
+      paragraphs: [
+        {
+          ref: "Trafikkontoret – Parkerings API (LTFR)",
+          text: "Lokala trafikföreskrifter i maskinläsbart format (JSON/WFS) med API-nyckel.",
+        },
+        {
+          ref: "Trafikförordningen 3 kap. 49 a §",
+          text: "Grundregeln 24 timmar, men lokala föreskrifter kan ange kortare maxtid eller nattförbud.",
+        },
+      ],
+      link: "openstreetgs.stockholm.se – Trafikkontoret",
+    },
+    nearby: [],
+    mapPins: [
+      { id: "p1", kind: "rapport", name: "Rapport: Högalidsparken", note: "“Nattförbud på gatan, men tvärgatan var ok.” – Maja, aug 2026", x: 40, y: 40 },
+      { id: "p2", kind: "rapport", name: "Rapport: Långholmsgatan", note: "“Max 24 h, övernattat utan problem.” – Johan, jul 2026", x: 66, y: 66 },
+    ],
+  },
+  {
+    id: "gallivare-centrum",
+    label: "Central parkering, Gällivare (ingen lokal regel)",
+    place: "Centrala Gällivare",
+    kommun: "Gällivare kommun",
+    geo: { tatort: "Gällivare", befolkning: "≈ 10 000" },
+    status: "ok",
+    verdict: "Troligen ok – kommunen saknar campingparagraf",
+    explanation:
+      "Gällivares lokala ordningsföreskrifter (19 §§) innehåller ingen paragraf om camping, husbilar eller övernattning i fordon. När kommunen inte reglerar något gäller de nationella grundreglerna: parkera lagligt, max 24 timmar på allmän plats – kontrollera skyltningen.",
+    chips: ["Fulltext granskad", "Ingen campingparagraf", "24-timmarsregeln"],
+    reasons: [
+      "Geo-kontroll (SCB 2023): positionen ligger inom tätort Gällivare – men utan campingförbud i stadgan spelar detaljplansfrågan ingen roll här.",
+      "Stadgans 19 §§ reglerar buller, grushantering, containrar, koppelhund och ridning i motionsspår – camping nämns bara i en bilaga om elskidspårsförbud.",
+      "Utan lokalt förbud gäller trafikförordningens grundregel: parkering på allmän plats i tätbebyggt område tillåten i 24 timmar.",
+      "Appens tredje svarstyp: 'granskad – inget lokalt förbud', vilket är något annat än 'okänd kommun'.",
+    ],
+    source: "Gällivare kommuns lokala ordningsföreskrifter (fulltext granskad okt 2026)",
+    dataSource: "Manuellt granskad ordningsstadga",
+    hasOpenData: false,
+    stadga: {
+      stance: "Ingen regel",
+      stanceDetail:
+        "Gällivares lokala ordningsföreskrifter reglerar inte camping eller övernattning i fordon. När en granskad stadga tiger gäller de nationella grundreglerna – varken 'förbjuden' eller 'okänd', utan 'granskad utan lokalt förbud'.",
+      paragraphs: [
+        {
+          ref: "Allmänna lokala ordningsföreskrifter (19 §§)",
+          text: "Föreskrifterna täcker lastning, buller, containrar, affischering, hundar och katter, ridning i motionsspår och avgifter för offentlig plats – ingen paragraf berör camping, husbil eller husvagn.",
+        },
+        {
+          ref: "Grundregel när kommunen inte reglerar",
+          text: "Parkering på allmän plats i tätbebyggt område är tillåten i 24 timmar (trafikförordningen 3 kap. 49 a §). Övernattning i lagligt parkerat fordon förbjuds inte av Gällivares föreskrifter.",
+        },
+        {
+          ref: "Undantaget",
+          text: "Förbudsskyltar (t.ex. husvagnsförbud eller nattligt parkeringsförbud) och kommunala trafikföreskrifter per gata gäller alltid – kontrollera skyltningen på platsen.",
+        },
+        {
+          ref: "Stickprovsfynd (okt 2026)",
+          text: "Av 10 slumpmässigt testade kommuner saknar en (Gällivare) campingparagraf helt – därför behöver appen en tydlig tredje status, inte bara ok/förbjuden/okänd.",
+        },
+      ],
+      link: "gallivare.se – Allmänna lokala ordningsföreskrifter för Gällivare kommun",
+    },
+    nearby: [],
+    mapPins: [
+      { id: "p1", kind: "rapport", name: "Rapport: Centrumparkeringen", note: "“Stod en natt i september, ingen kollade.” – Sara, sep 2026", x: 50, y: 55 },
+      { id: "p2", kind: "rapport", name: "Rapport: Nära järnvägsstationen", note: "“Tyst om natten, max 24 h-skylt.” – Mikael, aug 2026", x: 34, y: 30 },
+    ],
+  },
+  {
+    id: "landsort-okand",
+    label: "Landsväg utanför samhälle (okänd kommun)",
+    place: "Landsväg, inlandet",
+    kommun: "Kommun ej inläst",
+    geo: { tatort: null },
+    status: "unknown",
+    verdict: "Okänd kommun – grundreglerna gäller",
+    explanation:
+      "Vi saknar än så länge granskade regler för den här kommunen. Enligt grundreglerna är parkering på allmän plats i tätbebyggt område tillåten i 24 timmar – men kontrollera alltid skyltar.",
+    chips: ["Ingen lokal data än", "24-timmarsregeln", "Hjälp oss kartlägga"],
+    reasons: [
+      "Grundregel: parkering på allmän plats i tätbebyggt område är normalt tillåten i 24 timmar.",
+      "Skyltar om husvagnsförbud eller nattligt parkeringsförbud har alltid företräde.",
+      "Rapportera in platsen så prioriterar vi kommunen i databasen.",
+    ],
+    source: "Trafikförordningen 3 kap. 49 a §",
+    dataSource: "Nationella grundregler",
+    hasOpenData: false,
+    stadga: null,
+    nearby: [],
+    mapPins: [],
+  },
+];
+
+const STATUS_STYLE = {
+  ok: {
+    card: "bg-emerald-50 border-emerald-200",
+    ring: "bg-emerald-500",
+    chip: "bg-emerald-100 text-emerald-800",
+    text: "text-emerald-700",
+    icon: Check,
+    iconBg: "bg-emerald-500",
+    badge: "bg-emerald-100 text-emerald-800",
+  },
+  check: {
+    card: "bg-amber-50 border-amber-200",
+    ring: "bg-amber-500",
+    chip: "bg-amber-100 text-amber-800",
+    text: "text-amber-700",
+    icon: AlertWarning,
+    iconBg: "bg-amber-500",
+    badge: "bg-amber-100 text-amber-800",
+  },
+  forbidden: {
+    card: "bg-rose-50 border-rose-200",
+    ring: "bg-rose-500",
+    chip: "bg-rose-100 text-rose-800",
+    text: "text-rose-700",
+    icon: Ban,
+    iconBg: "bg-rose-500",
+    badge: "bg-rose-100 text-rose-800",
+  },
+  unknown: {
+    card: "bg-slate-100 border-slate-200",
+    ring: "bg-slate-500",
+    chip: "bg-slate-200 text-slate-700",
+    text: "text-slate-600",
+    icon: AlertInfo,
+    iconBg: "bg-slate-500",
+    badge: "bg-slate-200 text-slate-700",
+  },
+};
+
+const SIGN_INFO = [
+  {
+    sign: "PB1 – Personbil klass 1",
+    meaning: "Endast personbilar. Husbil/husvagn (PB2) är inte tillåten på platsen.",
+    tone: "text-rose-700 bg-rose-50 border-rose-200",
+  },
+  {
+    sign: "Camping förbjuden",
+    meaning: "Camping är förbjuden, men övernattning i fordon bedöms ofta som parkering – juridiskt gråzon. Halmstad t.ex. räknar övernattning som camping.",
+    tone: "text-amber-700 bg-amber-50 border-amber-200",
+  },
+  {
+    sign: "P + tid (t.ex. max 24 h)",
+    meaning: "Maximal parkeringstid gäller dig också – övernattning funkar bara om du flyttar inom maxtiden.",
+    tone: "text-emerald-700 bg-emerald-50 border-emerald-200",
+  },
+  {
+    sign: "Nattförbud (exempelvis 00–06)",
+    meaning: "Parkering förbjuden nattetid – övernattning är då inte möjlig på platsen.",
+    tone: "text-rose-700 bg-rose-50 border-rose-200",
+  },
+];
+
+/* ---------- Shared bits ---------- */
+
+function StatusBar() {
+  return (
+    <div className="flex items-center justify-between px-6 pt-3 pb-1 text-xs font-semibold text-slate-700">
+      <span>21:47</span>
+      <span className="flex items-center gap-1">
+        <span>VoLTE</span>
+        <span className="inline-block h-2 w-2 rounded-full bg-slate-700" />
+        <span className="inline-block h-2 w-3.5 rounded-sm border border-slate-700" />
+      </span>
+    </div>
+  );
+}
+
+function Chip({ children, className }) {
+  return (
+    <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${className}`}>
+      {children}
+    </span>
+  );
+}
+
+function ScreenHeader({ title, subtitle, icon: HeaderIcon, iconBg }) {
+  return (
+    <div className="flex items-center justify-between px-5 pt-3 pb-4">
+      <div>
+        <h1 className="text-xl font-bold tracking-tight text-slate-900">{title}</h1>
+        <p className="text-xs text-slate-500">{subtitle}</p>
+      </div>
+      <div className={`rounded-2xl p-2.5 text-white shadow-sm ${iconBg}`}>
+        <HeaderIcon className="h-5 w-5" />
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Hem ---------- */
+
+function HomeScreen({ location, onSelect }) {
+  const s = STATUS_STYLE[location.status];
+  const StatusIcon = s.icon;
+
+  return (
+    <div className="flex-1 overflow-y-auto">
+      <StatusBar />
+      <ScreenHeader title="Övernatta" subtitle="Kan jag stanna här i natt?" icon={MapPin} iconBg="bg-emerald-600" />
+
+      {/* Position selector */}
+      <div className="px-5">
+        <div className="rounded-2xl border border-slate-200 bg-white p-3.5 shadow-sm">
+          <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
+            <Navigation className="h-3.5 w-3.5 text-emerald-600" />
+            Din position
+            <span className="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+              Simulerad GPS
+            </span>
+          </div>
+          <select
+            value={location.id}
+            onChange={(e) => onSelect(e.target.value)}
+            className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-800 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+          >
+            {LOCATIONS.map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.label}
+              </option>
+            ))}
+          </select>
+          <p className="mt-2 text-[11px] leading-snug text-slate-400">
+            Byt plats för att testa hur svaret ändras mellan kommuner.
+          </p>
+        </div>
+      </div>
+
+      {/* Status hero */}
+      <div className="px-5 pt-4">
+        <div className={`rounded-3xl border p-5 shadow-sm ${s.card}`}>
+          <div className="flex items-center gap-3.5">
+            <div className={`rounded-full p-3 text-white shadow-md ${s.iconBg}`}>
+              <StatusIcon className="h-7 w-7" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                {location.kommun}
+              </p>
+              <h2 className={`text-lg font-bold leading-tight ${s.text}`}>{location.verdict}</h2>
+            </div>
+          </div>
+          <p className="mt-3 text-sm leading-relaxed text-slate-600">{location.explanation}</p>
+          <div className="mt-3.5 flex flex-wrap gap-1.5">
+            {location.chips.map((c) => (
+              <Chip key={c} className={s.chip}>
+                {c}
+              </Chip>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Why */}
+      <div className="px-5 pt-5">
+        <h3 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-400">
+          <Clock className="h-3.5 w-3.5" />
+          Varför det här svaret?
+        </h3>
+        <ul className="mt-2 space-y-2">
+          {location.reasons.map((r, i) => (
+            <li
+              key={i}
+              className="flex items-start gap-2 rounded-xl border border-slate-100 bg-white p-3 text-[13px] leading-snug text-slate-600 shadow-sm"
+            >
+              <span className={`mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full ${s.ring}`} />
+              {r}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-2 text-[11px] text-slate-400">
+          Källa: <span className="font-medium text-slate-500">{location.source}</span>
+        </p>
+      </div>
+
+      {/* Geo-kontroll */}
+      <div className="px-5 pt-5">
+        <h3 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-400">
+          <MapPin className="h-3.5 w-3.5" />
+          Geo-kontroll – riktig data
+        </h3>
+        <div
+          className={`mt-2 flex items-start gap-3 rounded-xl border p-3.5 shadow-sm ${
+            location.geo?.tatort ? "border-emerald-200 bg-emerald-50" : "border-slate-200 bg-slate-100"
+          }`}
+        >
+          <div className={`rounded-xl p-2 text-white ${location.geo?.tatort ? "bg-emerald-500" : "bg-slate-400"}`}>
+            <Check className="h-4 w-4" />
+          </div>
+          <div>
+            {location.geo?.tatort ? (
+              <div>
+                <p className="text-[13px] font-bold text-slate-800">
+                  Inom tätort {location.geo.tatort} ({location.geo.befolkning} inv.)
+                </p>
+                <p className="mt-0.5 text-[12px] leading-snug text-slate-500">
+                  Positionen ligger i tätbebyggt område – detaljplan är trolig och campingregeln (17 §) är tillämplig.
+                </p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-[13px] font-bold text-slate-700">Utanför tätort</p>
+                <p className="mt-0.5 text-[12px] leading-snug text-slate-500">
+                  Positionen ligger utanför tätbebyggt område – detaljplansregeln gäller sannolikt inte. Kontrollera ändå skyltar.
+                </p>
+              </div>
+            )}
+            <p className="mt-1.5 text-[10px] text-slate-400">
+              Källa: SCB Statistiska tätorter 2023 – punkt-i-polygon via WMS GetFeatureInfo
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Nearby */}
+      <div className="px-5 pt-5">
+        <h3 className="text-xs font-bold uppercase tracking-wide text-slate-400">
+          Ställplatser i närheten
+        </h3>
+        {location.nearby.length > 0 ? (
+          <div className="mt-2 space-y-2">
+            {location.nearby.map((n) => (
+              <div
+                key={n.name}
+                className="flex items-center gap-3 rounded-xl border border-slate-100 bg-white p-3 shadow-sm"
+              >
+                <div className="rounded-xl bg-emerald-50 p-2 text-emerald-600">
+                  <MapPin className="h-4 w-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-slate-800">{n.name}</p>
+                  <p className="text-[11px] text-slate-400">{n.distance}</p>
+                </div>
+                <span className="shrink-0 text-xs font-semibold text-slate-600">{n.price}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-2 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-center">
+            <p className="text-[13px] text-slate-500">Inga ställplatser i databasen här än.</p>
+            <p className="mt-1 text-[11px] text-slate-400">
+              I riktiga appen kan du rapportera in platser – det blir appens datamotor.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Data source */}
+      <div className="px-5 pt-5">
+        <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-sm">
+          <div className="rounded-xl bg-slate-100 p-2 text-slate-500">
+            <Book className="h-4 w-4" />
+          </div>
+          <div>
+            <p className="text-[13px] font-semibold text-slate-800">{location.dataSource}</p>
+            <p className="mt-0.5 text-[11px] text-slate-400">Senast granskad: sep 2026</p>
+            {location.hasOpenData ? (
+              <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-[10px] font-semibold text-blue-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                Kommunen har öppna data
+              </span>
+            ) : (
+              <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-[10px] font-semibold text-slate-600">
+                <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                Manuellt granskad källa
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="px-5 pb-6 pt-4">
+        <p className="text-center text-[10px] leading-relaxed text-slate-400">
+          Prototyp med demodata. Kontrollera alltid skyltar och gällande föreskrifter på platsen.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Regler ---------- */
+
+function RulesScreen({ location }) {
+  const s = STATUS_STYLE[location.status];
+  return (
+    <div className="flex-1 overflow-y-auto">
+      <StatusBar />
+      <ScreenHeader title="Regler" subtitle={`${location.kommun} · ${location.place}`} icon={Book} iconBg="bg-slate-700" />
+
+      {/* Kommunens hållning */}
+      <div className="px-5">
+        <div className={`rounded-3xl border p-5 shadow-sm ${s.card}`}>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+            Kommunens hållning
+          </p>
+          <h2 className={`mt-1 text-lg font-bold leading-tight ${s.text}`}>
+            {location.stadga ? location.stadga.stance : "Okänd"}
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">
+            {location.stadga
+              ? location.stadga.stanceDetail
+              : "Vi har inte granskat den här kommunens ordningsstadga ännu. Rapportera in platsen så prioriterar vi den."}
+          </p>
+        </div>
+      </div>
+
+      {/* Gällande paragrafer */}
+      <div className="px-5 pt-5">
+        <h3 className="text-xs font-bold uppercase tracking-wide text-slate-400">
+          Gällande föreskrifter
+        </h3>
+        <div className="mt-2 space-y-2">
+          {(location.stadga ? location.stadga.paragraphs : []).map((p, i) => (
+            <div
+              key={i}
+              className="rounded-xl border border-slate-100 bg-white p-3.5 shadow-sm"
+            >
+              <p className="text-[12px] font-bold text-emerald-700">{p.ref}</p>
+              <p className="mt-1 text-[13px] leading-snug text-slate-600">{p.text}</p>
+            </div>
+          ))}
+          {!location.stadga && (
+            <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-center text-[13px] text-slate-500">
+              Ingen granskad lokal föreskrift ännu – nationella grundregler gäller.
+            </div>
+          )}
+        </div>
+        {location.stadga && (
+          <p className="mt-2 text-[11px] text-slate-400">
+            Original: <span className="font-medium text-slate-500">{location.stadga.link}</span>
+          </p>
+        )}
+      </div>
+
+      {/* Skyltning */}
+      <div className="px-5 pt-5">
+        <h3 className="text-xs font-bold uppercase tracking-wide text-slate-400">
+          Vanliga skyltar – och vad de betyder
+        </h3>
+        <div className="mt-2 space-y-2">
+          {SIGN_INFO.map((si) => (
+            <div key={si.sign} className={`rounded-xl border p-3.5 shadow-sm ${si.tone}`}>
+              <p className="text-[12px] font-bold">{si.sign}</p>
+              <p className="mt-1 text-[13px] leading-snug opacity-80">{si.meaning}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="px-5 pb-6 pt-4">
+        <p className="text-center text-[10px] leading-relaxed text-slate-400">
+          Prototyp med demodata – ej juridisk rådgivning. Kontrollera alltid skyltar och gällande föreskrift.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Karta ---------- */
+
+const PIN_STYLE = {
+  stallplats: {
+    dot: "bg-emerald-500",
+    ring: "ring-emerald-200",
+    label: "Ställplats",
+    badge: "bg-emerald-100 text-emerald-800",
+  },
+  rapport: {
+    dot: "bg-amber-500",
+    ring: "ring-amber-200",
+    label: "Användarrapport",
+    badge: "bg-amber-100 text-amber-800",
+  },
+};
+
+function MapBackground() {
+  return (
+    <svg
+      viewBox="0 0 400 260"
+      className="absolute inset-0 h-full w-full"
+      preserveAspectRatio="xMidYMid slice"
+    >
+      <rect width="400" height="260" fill="#eef0ea" />
+      {/* Parker / grönområden */}
+      <ellipse cx="60" cy="50" rx="70" ry="45" fill="#d9e8d2" />
+      <ellipse cx="340" cy="210" rx="80" ry="50" fill="#d9e8d2" />
+      {/* Vatten */}
+      <path d="M 310 0 C 280 60, 330 120, 300 260 L 400 260 L 400 0 Z" fill="#cfe0ee" />
+      {/* Gator */}
+      <g stroke="#ffffff" strokeWidth="10" strokeLinecap="round">
+        <line x1="0" y1="110" x2="400" y2="95" />
+        <line x1="0" y1="185" x2="400" y2="170" />
+        <line x1="90" y1="0" x2="120" y2="260" />
+        <line x1="220" y1="0" x2="200" y2="260" />
+        <line x1="290" y1="0" x2="305" y2="260" />
+      </g>
+      <g stroke="#e2e2dc" strokeWidth="3">
+        <line x1="0" y1="60" x2="400" y2="50" />
+        <line x1="160" y1="0" x2="150" y2="260" />
+        <line x1="0" y1="140" x2="400" y2="130" />
+      </g>
+    </svg>
+  );
+}
+
+function MapScreen({ location, reports }) {
+  const [selected, setSelected] = useState(null);
+
+  const userPins = reports
+    .filter((r) => r.locationId === location.id)
+    .map((r, i) => ({
+      id: r.id,
+      kind: "rapport",
+      name: `Din rapport: ${r.type}`,
+      note: r.text,
+      x: 40 + ((i * 25) % 45),
+      y: 35 + ((i * 33) % 45),
+    }));
+
+  const pins = [...location.mapPins, ...userPins];
+  const sel = selected ? pins.find((p) => p.id === selected) : null;
+
+  return (
+    <div className="flex-1 overflow-y-auto">
+      <StatusBar />
+      <ScreenHeader title="Karta" subtitle={`${location.kommun} · ${location.place}`} icon={Map} iconBg="bg-emerald-600" />
+
+      {/* Map */}
+      <div className="px-5">
+        <div className="relative h-[280px] overflow-hidden rounded-3xl border border-slate-200 shadow-sm">
+          <MapBackground />
+
+          {/* Din position */}
+          <div
+            className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
+            style={{ left: "55%", top: "55%" }}
+          >
+            <span className="absolute inline-flex h-6 w-6 animate-ping rounded-full bg-blue-400 opacity-60" />
+            <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-blue-600 shadow" />
+          </div>
+
+          {/* Pins */}
+          {pins.map((p) => {
+            const st = PIN_STYLE[p.kind];
+            const active = selected === p.id;
+            return (
+              <button
+                key={p.id}
+                onClick={() => setSelected(active ? null : p.id)}
+                className={`absolute z-10 -translate-x-1/2 -translate-y-full transition-transform ${active ? "scale-125" : "hover:scale-110"}`}
+                style={{ left: `${p.x}%`, top: `${p.y}%` }}
+              >
+                <span className={`block h-5 w-5 rounded-full border-2 border-white shadow-md ring-4 ${st.dot} ${st.ring} ${active ? "ring-offset-1" : ""}`} />
+              </button>
+            );
+          })}
+
+          {pins.length === 0 && (
+            <div className="absolute inset-x-6 top-1/2 z-10 -translate-y-1/2 rounded-2xl border border-slate-200 bg-white/95 p-4 text-center shadow-sm">
+              <p className="text-[13px] font-semibold text-slate-600">Inga platser i databasen här</p>
+              <p className="mt-1 text-[11px] text-slate-400">
+                Rapportera in ställplatser och skyltar – communityn bygger kartan.
+              </p>
+            </div>
+          )}
+
+          {/* Legend */}
+          <div className="absolute bottom-3 left-3 z-10 flex gap-3 rounded-full bg-white/95 px-3 py-1.5 shadow-sm">
+            <span className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-600">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" /> Ställplats
+            </span>
+            <span className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-600">
+              <span className="h-2 w-2 rounded-full bg-amber-500" /> Rapport
+            </span>
+          </div>
+        </div>
+
+        {/* Selected pin */}
+        {sel && (
+          <div className="mt-3 flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-sm">
+            <div className={`rounded-xl p-2 ${PIN_STYLE[sel.kind].dot} text-white`}>
+              <MapPin className="h-4 w-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <p className="truncate text-sm font-semibold text-slate-800">{sel.name}</p>
+                <Chip className={PIN_STYLE[sel.kind].badge}>{PIN_STYLE[sel.kind].label}</Chip>
+              </div>
+              <p className="mt-1 text-[12px] leading-snug text-slate-500">{sel.note}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Pin list */}
+        <div className="pt-4">
+          <h3 className="text-xs font-bold uppercase tracking-wide text-slate-400">
+            Platser i närheten ({pins.length})
+          </h3>
+          <div className="mt-2 space-y-2 pb-6">
+            {pins.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => setSelected(p.id)}
+                className="flex w-full items-center gap-3 rounded-xl border border-slate-100 bg-white p-3 text-left shadow-sm"
+              >
+                <div className={`rounded-xl p-2 ${PIN_STYLE[p.kind].dot} text-white`}>
+                  <MapPin className="h-4 w-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-slate-800">{p.name}</p>
+                  <p className="truncate text-[11px] text-slate-400">{p.note}</p>
+                </div>
+                <Chip className={PIN_STYLE[p.kind].badge}>{PIN_STYLE[p.kind].label}</Chip>
+              </button>
+            ))}
+            {pins.length === 0 && (
+              <p className="pb-2 text-center text-[11px] text-slate-400">
+                Tomt här ännu – byt plats eller rapportera in något.
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Rapportera ---------- */
+
+const REPORT_TYPES = [
+  {
+    id: "ok",
+    label: "Övernattat här (ok)",
+    icon: Check,
+    tone: "border-emerald-500 bg-emerald-50 text-emerald-700",
+  },
+  {
+    id: "forbud",
+    label: "Skylt / förbud",
+    icon: Ban,
+    tone: "border-rose-500 bg-rose-50 text-rose-700",
+  },
+  {
+    id: "stallplats",
+    label: "Ny ställplats",
+    icon: PinPlus,
+    tone: "border-amber-500 bg-amber-50 text-amber-700",
+  },
+];
+
+function ReportScreen({ location, reports, onSubmit }) {
+  const [type, setType] = useState("ok");
+  const [text, setText] = useState("");
+  const [toast, setToast] = useState(false);
+
+  const submit = () => {
+    if (!text.trim()) return;
+    onSubmit({ id: `r${Date.now()}`, locationId: location.id, type: type, text: text.trim() });
+    setText("");
+    setToast(true);
+    setTimeout(() => setToast(false), 3500);
+  };
+
+  return (
+    <div className="flex-1 overflow-y-auto">
+      <StatusBar />
+      <ScreenHeader title="Rapportera" subtitle={`${location.kommun} · ${location.place}`} icon={PinPlus} iconBg="bg-amber-500" />
+
+      {/* Typ */}
+      <div className="px-5">
+        <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Vad vill du rapportera?</p>
+        <div className="mt-2 space-y-2">
+          {REPORT_TYPES.map((t) => {
+            const TIcon = t.icon;
+            const active = type === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setType(t.id)}
+                className={`flex w-full items-center gap-3 rounded-xl border-2 p-3.5 text-left text-sm font-semibold transition-colors ${
+                  active ? t.tone : "border-slate-200 bg-white text-slate-600"
+                }`}
+              >
+                <TIcon className="h-5 w-5 shrink-0" />
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Beskrivning */}
+      <div className="px-5 pt-5">
+        <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Beskrivning</p>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={3}
+          placeholder="T.ex. “Stod här en natt i september, ingen skylt syns…”"
+          className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+        />
+        <button
+          disabled
+          className="mt-2 w-full rounded-xl border border-dashed border-slate-300 bg-white p-2.5 text-xs font-semibold text-slate-400"
+        >
+          + Lägg till foto (kommer i nästa version)
+        </button>
+      </div>
+
+      {/* Skicka */}
+      <div className="px-5 pt-4">
+        <button
+          onClick={submit}
+          disabled={!text.trim()}
+          className={`w-full rounded-xl py-3 text-sm font-bold text-white shadow-md transition-colors ${
+            text.trim() ? "bg-emerald-600 hover:bg-emerald-700" : "bg-slate-300"
+          }`}
+        >
+          Skicka rapport
+        </button>
+        <p className="mt-2 text-center text-[11px] text-slate-400">
+          Din rapport syns direkt på kartan och hjälper andra husbilsägare.
+        </p>
+      </div>
+
+      {/* Toast */}
+      {toast && (
+        <div className="px-5 pt-4">
+          <div className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-[13px] font-semibold text-emerald-700">
+            <Check className="h-4 w-4" />
+            Tack! Rapporten är sparad och syns nu på kartan.
+          </div>
+        </div>
+      )}
+
+      {/* Senaste rapporter */}
+      <div className="px-5 pt-5">
+        <h3 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-400">
+          <ClockRotate className="h-3.5 w-3.5" />
+          Senaste rapporter här
+        </h3>
+        <div className="mt-2 space-y-2 pb-6">
+          {reports.filter((r) => r.locationId === location.id).length === 0 && (
+            <p className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-center text-[13px] text-slate-500">
+              Inga användarrapporter för den här platsen än – bli först!
+            </p>
+          )}
+          {reports
+            .filter((r) => r.locationId === location.id)
+            .map((r) => (
+              <div key={r.id} className="rounded-xl border border-slate-100 bg-white p-3 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <Chip className="bg-amber-100 text-amber-800">
+                    {REPORT_TYPES.find((t) => t.id === r.type)?.label ?? "Rapport"}
+                  </Chip>
+                  <span className="text-[10px] text-slate-400">Nyss</span>
+                </div>
+                <p className="mt-1.5 text-[13px] leading-snug text-slate-600">{r.text}</p>
+              </div>
+            ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- App ---------- */
+
+/* ---------- Täckning ---------- */
+
+const COVERAGE_LAYERS = [
+  {
+    name: "Tätortscheck via SCB (2023)",
+    count: 290,
+    note: "Mätt – öppna geodata, punkt-i-polygon",
+    measured: true,
+  },
+  {
+    name: "Trafikföreskrifter per gata (Transportstyrelsen)",
+    count: 290,
+    note: "Mätt – nationell samling, adressuppslag",
+    measured: true,
+  },
+  {
+    name: "Detaljplaner i NGP (apr 2026)",
+    count: 252,
+    note: "Mätt – 16 069 planer tillgängliggjorda",
+    measured: true,
+  },
+  {
+    name: "Stadga med camping-/husbilsregel",
+    count: 210,
+    note: "Uppskattning – 7 av 10 i stickprovet",
+    measured: false,
+  },
+  {
+    name: "Stadga maskinläsbar utan extra jobb",
+    count: 190,
+    note: "Uppskattning – 6–7 av 10 i fulltext",
+    measured: false,
+  },
+  {
+    name: "Full Gävle-nivå (stadga + detaljplan + geo)",
+    count: 120,
+    note: "Uppskattning – växer snabbt via NGP",
+    measured: false,
+  },
+];
+
+const NGP_TREND = [
+  { period: "feb 2022", count: 22 },
+  { period: "apr 2025", count: 236 },
+  { period: "apr 2026", count: 252 },
+];
+
+const STICKPROV = [
+  { kommun: "Borås", resultat: "Campingförbud utom husbilsställplatser", tone: "ok" },
+  { kommun: "Lund", resultat: "Camping endast anvisade platser", tone: "ok" },
+  { kommun: "Trollhättan", resultat: "§15 campingförbud (PDF ej maskinläsbar)", tone: "ok" },
+  { kommun: "Tranemo", resultat: "Förbud – men badplats tillåtet 24 h", tone: "ok" },
+  { kommun: "Ljungby", resultat: "Förbud utom avsedda platser", tone: "ok" },
+  { kommun: "Ekerö", resultat: "Endast särskilda platser + badplatsförbud", tone: "ok" },
+  { kommun: "Lomma", resultat: "Regel finns – PDF svår att maskinläsa", tone: "partial" },
+  { kommun: "Gällivare", resultat: "Saknar campingparagraf helt", tone: "none" },
+  { kommun: "Dals-Ed", resultat: "Stadga finns – innehåll okänt", tone: "unknown" },
+  { kommun: "Sunne", resultat: "Stadga finns – PDF ej sökbar", tone: "unknown" },
+];
+
+const PROV_TONE = {
+  ok: "border-emerald-200 bg-emerald-50 text-emerald-800",
+  partial: "border-amber-200 bg-amber-50 text-amber-800",
+  none: "border-rose-200 bg-rose-50 text-rose-800",
+  unknown: "border-slate-200 bg-slate-100 text-slate-600",
+};
+
+const DOTS = [
+  ...Array(120).fill("full"),
+  ...Array(90).fill("stadge"),
+  ...Array(80).fill("ovrig"),
+];
+
+const DOT_TONE = {
+  full: "bg-emerald-500",
+  stadge: "bg-sky-500",
+  ovrig: "bg-slate-300",
+};
+
+function CoverageScreen() {
+  return (
+    <div className="flex-1 overflow-y-auto">
+      <StatusBar />
+      <ScreenHeader
+        title="Täckning"
+        subtitle="Hur stor del av Sverige kan appen svara på?"
+        icon={Navigation}
+        iconBg="bg-sky-600"
+      />
+
+      {/* Nyckeltal */}
+      <div className="grid grid-cols-3 gap-2 px-5 pt-4">
+        {[
+          { v: "290/290", l: "Basnivå", d: "SCB + trafikregler", cls: "text-emerald-600" },
+          { v: "~210", l: "Tolkad stadga", d: "kommuner, est.", cls: "text-sky-600" },
+          { v: "~120", l: "Full Gävle-nivå", d: "idag – växer snabbt", cls: "text-amber-600" },
+        ].map((c) => (
+          <div key={c.l} className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+            <p className={`text-lg font-bold leading-tight ${c.cls}`}>{c.v}</p>
+            <p className="mt-0.5 text-[11px] font-semibold text-slate-600">{c.l}</p>
+            <p className="text-[10px] text-slate-400">{c.d}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* En prick per kommun */}
+      <div className="px-5 pt-5">
+        <h3 className="text-xs font-bold uppercase tracking-wide text-slate-400">
+          Sveriges 290 kommuner
+        </h3>
+        <p className="mt-1 text-[11px] leading-snug text-slate-400">
+          En prick per kommun (demofördelning). Grönt = full Gävle-nivå idag, blått = tolkad
+          stadga men detaljplansdata saknas, grått = ej granskad.
+        </p>
+        <div className="mt-2 flex flex-wrap gap-1 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+          {DOTS.map((d, i) => (
+            <span key={i} className={`h-2 w-2 rounded-full ${DOT_TONE[d]}`}></span>
+          ))}
+        </div>
+        <div className="mt-2 flex flex-wrap gap-3 text-[10px] font-medium text-slate-500">
+          <span className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-emerald-500"></span>Full nivå (~120)
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-sky-500"></span>Stadga tolkad (~90 till)
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-slate-300"></span>Ej granskad (~80)
+          </span>
+        </div>
+      </div>
+
+      {/* Datalager */}
+      <div className="px-5 pt-5">
+        <h3 className="text-xs font-bold uppercase tracking-wide text-slate-400">
+          Datalager – kommuner av 290
+        </h3>
+        <div className="mt-2 space-y-2.5">
+          {COVERAGE_LAYERS.map((layer) => (
+            <div
+              key={layer.name}
+              className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm"
+            >
+              <div className="flex items-baseline justify-between gap-2">
+                <p className="text-[12px] font-semibold text-slate-700">{layer.name}</p>
+                <p className="shrink-0 text-[12px] font-bold text-slate-800">
+                  {layer.count}
+                  <span className="font-normal text-slate-400">/290</span>
+                </p>
+              </div>
+              <div className="mt-1.5 h-2 rounded-full bg-slate-100">
+                <div
+                  className={`h-2 rounded-full ${layer.measured ? "bg-emerald-500" : "bg-amber-500"}`}
+                  style={{ width: Math.round((layer.count / 290) * 100) + "%" }}
+                ></div>
+              </div>
+              <p className="mt-1 text-[10px] text-slate-400">{layer.note}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* NGP-trend */}
+      <div className="px-5 pt-5">
+        <h3 className="text-xs font-bold uppercase tracking-wide text-slate-400">
+          Detaljplansdata i NGP växer snabbt
+        </h3>
+        <div className="mt-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex items-end justify-between gap-3">
+            {NGP_TREND.map((t) => (
+              <div key={t.period} className="flex flex-1 flex-col items-center gap-1">
+                <span className="text-[10px] font-bold text-slate-700">{t.count}</span>
+                <div className="flex h-[90px] w-full max-w-[52px] items-end justify-center rounded-t-lg bg-slate-100">
+                  <div
+                    className="w-full rounded-t-lg bg-sky-500"
+                    style={{
+                      height: Math.max(4, Math.round((t.count / 252) * 90)) + "px",
+                    }}
+                  ></div>
+                </div>
+                <span className="text-[10px] text-slate-400">{t.period}</span>
+              </div>
+            ))}
+          </div>
+          <p className="mt-2 text-[10px] leading-snug text-slate-400">
+            Planer påbörjade före 2022 behöver inte levereras digitalt – därför är full
+            Gävle-nivå lagom bakom NGP-kurvan.
+          </p>
+        </div>
+      </div>
+
+      {/* Stickprov */}
+      <div className="px-5 pt-5">
+        <h3 className="text-xs font-bold uppercase tracking-wide text-slate-400">
+          Stickprov: 10 slumpmässiga kommuner (okt 2026)
+        </h3>
+        <div className="mt-2 space-y-2">
+          {STICKPROV.map((p) => (
+            <div
+              key={p.kommun}
+              className={`flex items-center justify-between gap-2 rounded-xl border p-3 shadow-sm ${PROV_TONE[p.tone]}`}
+            >
+              <span className="text-[13px] font-semibold">{p.kommun}</span>
+              <span className="text-right text-[11px] font-medium opacity-80">
+                {p.resultat}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="px-5 pb-6 pt-4">
+        <p className="text-center text-[10px] leading-relaxed text-slate-400">
+          Källor: SCB tätorter 2023 · Transportstyrelsens trafikföreskriftssamling ·
+          Lantmäteriet NGP (252 kommuner, apr 2026) · kommunala ordningsstadgor.
+          Uppskattningar från stickprov – prototyp, ej juridisk rådgivning.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [locId, setLocId] = useState("gavle-skeppsbron");
+  const [tab, setTab] = useState("hem");
+  const [reports, setReports] = useState([]);
+  const location = LOCATIONS.find((l) => l.id === locId) ?? LOCATIONS[0];
+
+  const tabs = [
+    { id: "hem", label: "Hem", icon: HousePin },
+    { id: "karta", label: "Karta", icon: Map },
+    { id: "regler", label: "Regler", icon: Book },
+    { id: "tackning", label: "Täckning", icon: Navigation },
+    { id: "rapportera", label: "Rapportera", icon: PinPlus },
+  ];
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-4">
+      <div className="flex h-[860px] w-full max-w-[420px] flex-col overflow-hidden rounded-[2.2rem] border border-slate-700/50 bg-slate-50 shadow-2xl">
+        {tab === "hem" && <HomeScreen location={location} onSelect={setLocId} />}
+        {tab === "karta" && (
+          <MapScreen location={location} reports={reports} />
+        )}
+        {tab === "regler" && <RulesScreen location={location} />}
+        {tab === "tackning" && <CoverageScreen />}
+        {tab === "rapportera" && (
+          <ReportScreen
+            location={location}
+            reports={reports}
+            onSubmit={(r) => setReports((prev) => [r, ...prev])}
+          />
+        )}
+
+        {/* Tab bar */}
+        <div className="flex border-t border-slate-200 bg-white px-2 py-2">
+          {tabs.map((t) => {
+            const TabIcon = t.icon;
+            const active = tab === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className={`flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1.5 transition-colors ${
+                  active ? "bg-emerald-50 text-emerald-600" : "text-slate-400 hover:text-slate-600"
+                }`}
+              >
+                <TabIcon className="h-5 w-5" />
+                <span className="text-[10px] font-semibold">{t.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
