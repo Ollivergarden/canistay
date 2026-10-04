@@ -807,6 +807,61 @@ const LOCATIONS = [
       { id: "p3", kind: "stallplats", name: "Badplats Valkalampi, Jädraås", note: "Kojvelampivägen · plats för husvagn/husbil · torrdass · put-and-take-fiske", x: 25, y: 25 },
     ],
   },
+  {
+    id: "sandviken-kommun",
+    label: "Sandviken kommun (manuellt granskad)",
+    place: "Sandviken",
+    kommun: "Sandviken kommun",
+    geo: { tatort: "Sandviken", befolkning: "≈ 23 000" },
+    status: "ok",
+    verdict: "Ja – en natt är ok; två nätter kräver ställplats",
+    explanation:
+      "Sandvikens lokala ordningsföreskrifter (22 §) definierar camping som övernattning mer än en natt – och camping med husbil är bara tillåten på angiven plats. En enskild övernattning i husbilen är alltså per definition inte camping och tillåten överallt där parkering får ske. Parkeringen i centrala Sandviken är gratis på cirka 700 allmänna platser.",
+    chips: ["Camping = 2+ nätter", "Gratis parkering i centrum", "Datumparkering vintertid", "Ställplatser: Högbo & Hedås"],
+    reasons: [
+      "Ordningsföreskrifterna 22 §: “Camping, med tält, husvagn eller husbil, är endast tillåten på därför angiven plats. Med camping avses övernattning mer än en (1) natt.” – en enskild natt i husbilen är alltså inte camping.",
+      "Parkering på allmän plats i tätbebyggt område är normalt tillåten i 24 timmar (trafikförordningen 3 kap. 49 a §).",
+      "Cirka 700 gratis parkeringsplatser på allmän mark i centrala Sandviken – kommunens parkeringskarta visar var husbil och husvagn får stå.",
+      "Vintertid (1 okt–15 maj, 00–06) gäller datumparkering i tätorten: stå på den gatusida som matchar dagens datum. Fem gator har dygnet runt-förbud under perioden.",
+    ],
+    source: "sandviken.se (Lokala ordningsföreskrifter · Parkering · Badplatser) · hogbobruk.se",
+    dataSource: "Manuellt granskad kommun (okt 2026)",
+    hasOpenData: false,
+    stadga: {
+      stance: "Reglerat",
+      stanceDetail:
+        "Sandviken reglerar camping i sina lokala ordningsföreskrifter – men med en ovanligt husbilsvänlig definition: camping betyder övernattning mer än en natt. En natt i husbilen räknas alltså inte som camping och är tillåten där parkering får ske. Övernattar du två nätter eller mer krävs angiven plats (ställplats/camping). Överträdelse av 22 § kan ge penningböter (25 §).",
+      paragraphs: [
+        {
+          ref: "Lokala ordningsföreskrifterna 22 § (KFS, fastställda 2022-04-19)",
+          text: "“Camping, med tält, husvagn eller husbil, är endast tillåten på därför angiven plats. Med camping avses övernattning mer än en (1) natt.”",
+        },
+        {
+          ref: "Tolkning",
+          text: "Till skillnad från t.ex. Halmstad, som räknar varje övernattning i fordon som camping, exkluderar Sandviken uttryckligen en enskild natt – en natt i husbilen på laglig parkering är därför ok.",
+        },
+        {
+          ref: "Lokala ordningsföreskrifterna 25 §",
+          text: "Den som uppsåtligen eller av oaktsamhet bryter mot 22 § kan dömas till penningböter enligt ordningslagen 3 kap. 22 § andra stycket.",
+        },
+        {
+          ref: "Parkering (sandviken.se)",
+          text: "Gratis parkering på cirka 700 platser på allmän mark i centrum; parkeringskartan markerar var husbil/husvagn får stå. Datumparkering i tätorten 1 okt–15 maj kl. 00–06; inom tätbebyggt område är parkering på gräsmattor och naturytor förbjuden.",
+        },
+      ],
+      link: "sandviken.se – Lokala ordningsföreskrifter · Parkering",
+    },
+    nearby: [
+      { name: "Högbo Bruks Ställplats", distance: "Hans Hiertas väg 17, Högbo", price: "Från 200 kr/natt · 15 platser · el · dusch & bastu · året runt" },
+      { name: "Hedåsbadet", distance: "Storsjön, söder om centrum", price: "8 ställplatser · badsäsong" },
+      { name: "Ställplats Oslättfors", distance: "Oslättforsvägen, Oslättfors", price: "Nära badplats · året runt" },
+    ],
+    mapPins: [
+      { id: "p1", kind: "stallplats", name: "Högbo Bruks Ställplats", note: "Hans Hiertas väg 17 · 15 platser · el · från 200 kr · dusch & bastu · året runt", x: 45, y: 40 },
+      { id: "p2", kind: "stallplats", name: "Hedåsbadet", note: "Storsjön · 8 ställplatser för husvagnar/husbilar · badsäsong", x: 60, y: 62 },
+      { id: "p3", kind: "stallplats", name: "Ställplats Oslättfors", note: "Oslättforsvägen · nära badplats · året runt", x: 28, y: 28 },
+    ],
+  },
 ];
 
 const STATUS_STYLE = {
