@@ -752,6 +752,61 @@ const LOCATIONS = [
     nearby: [],
     mapPins: [],
   },
+  {
+    id: "ockelbo-kommun",
+    label: "Ockelbo kommun (manuellt granskad)",
+    place: "Ockelbo",
+    kommun: "Ockelbo kommun",
+    geo: { tatort: "Ockelbo", befolkning: "≈ 2 700" },
+    status: "ok",
+    verdict: "Ja – Ockelbo är öppen för husbilar",
+    explanation:
+      "Ockelbo kommun har inget känt förbud mot övernattning i husbil: ingen lokal ordningsstadga med campingförbud har hittats och inga husbilsspecifika lokala trafikföreskrifter finns i STFS. Parkeringen i kommunen är gratis överallt – tidsbegränsade ytor och skyltning sätter gränserna. Kommunen uppmuntrar till och med fricamping i sin besöksnäringsblogg.",
+    chips: ["Gratis parkering", "Inget campingförbud", "Ställplatser vid Wij", "24-timmarsregeln"],
+    reasons: [
+      "Parkeringen i Ockelbo kommun är gratis – inga betalappar eller p-skivor – men vissa parkeringar är tidsbegränsade (ockelbo.se, mars 2026).",
+      "Ingen lokal ordningsstadga med campingförbud har hittats – till skillnad från t.ex. Halmstad och Simrishamn.",
+      "Kommunen driver besöksnäring aktivt och uppmuntrar fricamping och taktält i sin blogg, samtidigt som de konstaterar att fordonscamping inte omfattas av allemansrätten.",
+      "Grundreglerna gäller som vanligt: max 24 timmars parkering på allmän plats, följ skyltning på platsen, terrängkörning är förbjuden.",
+    ],
+    source: "ockelbo.se (Gator & torg · Badplatser) · raggsockalogi.se",
+    dataSource: "Manuellt granskad kommun (okt 2026)",
+    hasOpenData: false,
+    stadga: {
+      stance: "Tillåtande",
+      stanceDetail:
+        "Ockelbo har ingen känd lokal ordningsstadga som förbjuder camping eller övernattning på offentlig plats. Ordningslagsärenden (t.ex. anspråk på offentlig plats) hanteras av polisen. Lokala trafikföreskrifter beslutas av kommunstyrelsen och publiceras i Transportstyrelsens register STFS – inga husbilsspecifika föreskrifter finns för kommunen.",
+      paragraphs: [
+        {
+          ref: "Parkering (ockelbo.se – Gator & torg)",
+          text: "“När du parkerar i Ockelbo kommun behöver du inte tänka på betalappar eller parkeringsskiva. Att parkera här är gratis. Vissa parkeringar har tidsbegränsning.”",
+        },
+        {
+          ref: "Lokala trafikföreskrifter (ockelbo.se – Gator & torg)",
+          text: "“Kommunstyrelsen ansvarar för att besluta om lokala trafikföreskrifter. Alla lokala trafikföreskrifter finns i Svensk Trafikföreskriftsamling.” – i registret finns inga husbilsspecifika föreskrifter för Ockelbo.",
+        },
+        {
+          ref: "Kommunens attityd (ockelbo.se – besöksnäring)",
+          text: "“Det finns många platser där du kan taktälta och även om taktältande eller fricamping i husbil inte omfattas av allemansrätten så behöver man ändå ha den och dess paroll ‘Inte störa – inte förstöra’ i bakhuvudet.”",
+        },
+        {
+          ref: "Trafikförordningen 3 kap. 49 a §",
+          text: "Parkering på allmän plats i tätbebyggt område tillåten i 24 timmar.",
+        },
+      ],
+      link: "ockelbo.se – Gator & torg · Transportstyrelsens STFS-register",
+    },
+    nearby: [
+      { name: "Raggsocka Logi (vid Wij Trädgårdar)", distance: "Vigatan 2, Ockelbo", price: "12 platser · el 10 A · dusch/WC · wifi" },
+      { name: "Medskogsjöns Camping & Restaurang", distance: "Åmot, vid väg 272", price: "Camping · badplats · restaurang" },
+      { name: "Badplats Sidsjön, Källsjön", distance: "Sidsjövägen", price: "Utrymme för enstaka husvagnar/husbilar" },
+    ],
+    mapPins: [
+      { id: "p1", kind: "stallplats", name: "Raggsocka Logi", note: "Vigatan 2 · 12 platser · el 10 A · full service · vid Wij Trädgårdar", x: 42, y: 58 },
+      { id: "p2", kind: "stallplats", name: "Medskogsjöns Camping", note: "Åmot, väg 272 · camping · badplats · restaurang", x: 70, y: 35 },
+      { id: "p3", kind: "stallplats", name: "Badplats Valkalampi, Jädraås", note: "Kojvelampivägen · plats för husvagn/husbil · torrdass · put-and-take-fiske", x: 25, y: 25 },
+    ],
+  },
 ];
 
 const STATUS_STYLE = {
