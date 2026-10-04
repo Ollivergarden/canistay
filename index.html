@@ -215,6 +215,7 @@
       .placeholder\:text-slate-400::placeholder{color:#94a3b8}
       .hover\:text-slate-600:hover{color:#475569}
       .hover\:bg-emerald-700:hover{background-color:#047857}
+      .hover\:bg-slate-100:hover{background-color:#f1f5f9}
       .focus\:border-emerald-400:focus{border-color:#34d399}
       .focus\:outline-none:focus,.outline-none{outline:2px solid transparent;outline-offset:2px}
       .shadow-sm,.shadow,.shadow-md,.shadow-2xl,.ring-4,.ring-offset-1,.focus\:ring-2:focus{
@@ -854,7 +855,7 @@ function ScreenHeader({ title, subtitle, icon: HeaderIcon, iconBg }) {
 
 /* ---------- Hem ---------- */
 
-function HomeScreen({ location, onSelect }) {
+function HomeScreen({ location, onSelect, gpsMode, onLocate, onStopGps }) {
   const s = STATUS_STYLE[location.status];
   const StatusIcon = s.icon;
 
@@ -869,24 +870,79 @@ function HomeScreen({ location, onSelect }) {
           <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
             <Navigation className="h-3.5 w-3.5 text-emerald-600" />
             Din position
-            <span className="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
-              Simulerad GPS
-            </span>
+            {gpsMode && gpsMode.state === "ok" ? (
+              <span className="ml-auto rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                GPS aktiv
+              </span>
+            ) : (
+              <span className="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+                Demoläge
+              </span>
+            )}
           </div>
-          <select
-            value={location.id}
-            onChange={(e) => onSelect(e.target.value)}
-            className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-800 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
-          >
-            {LOCATIONS.map((l) => (
-              <option key={l.id} value={l.id}>
-                {l.label}
-              </option>
-            ))}
-          </select>
-          <p className="mt-2 text-[11px] leading-snug text-slate-400">
-            Byt plats för att testa hur svaret ändras mellan kommuner.
-          </p>
+
+          {gpsMode && gpsMode.state === "ok" ? (
+            <div className="mt-2">
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
+                <p className="text-[13px] font-bold text-slate-800">
+                  {gpsMode.info.latitude.toFixed(4)}° N, {gpsMode.info.longitude.toFixed(4)}° Ö
+                </p>
+                <p className="mt-0.5 text-[12px] text-slate-500">
+                  Noggrannhet ±{Math.round(gpsMode.info.accuracy)} m
+                </p>
+                <p className="mt-1 text-[12px] text-slate-500">
+                  {gpsMode.info.kommun
+                    ? "Kommun: " + gpsMode.info.kommun
+                    : "Kommunen kunde inte avgöras (nätverksfel vid uppslag)"}
+                </p>
+                <p className="mt-1 text-[12px] font-semibold text-slate-700">
+                  {gpsMode.info.matched
+                    ? "Matchad mot granskat underlag – svaret nedan gäller din position."
+                    : "Kommunen är inte granskad än – se riktlinjerna nedan och rapportera gärna in platsen!"}
+                </p>
+              </div>
+              <button
+                onClick={onStopGps}
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-[12px] font-semibold text-slate-600 outline-none transition-colors hover:bg-slate-100"
+              >
+                Tillbaka till demoläge
+              </button>
+            </div>
+          ) : (
+            <div>
+              <button
+                onClick={onLocate}
+                disabled={gpsMode && gpsMode.state === "loading"}
+                className={`mt-2 w-full rounded-xl px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors ${
+                  gpsMode && gpsMode.state === "loading" ? "bg-slate-300" : "bg-emerald-600 hover:bg-emerald-700"
+                }`}
+              >
+                {gpsMode && gpsMode.state === "loading"
+                  ? "Hämtar din position …"
+                  : "Använd min position (GPS)"}
+              </button>
+              <select
+                value={location.id}
+                onChange={(e) => onSelect(e.target.value)}
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-800 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+              >
+                {LOCATIONS.map((l) => (
+                  <option key={l.id} value={l.id}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-2 text-[11px] leading-snug text-slate-400">
+                GPS hämtar din riktiga position. Demoplatserna visar hur svaret varierar mellan kommuner.
+              </p>
+            </div>
+          )}
+
+          {gpsMode && gpsMode.state === "error" && (
+            <p className="mt-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-[12px] leading-snug text-amber-800">
+              {gpsMode.error}
+            </p>
+          )}
         </div>
       </div>
 
@@ -1654,11 +1710,119 @@ function CoverageScreen() {
   );
 }
 
+function buildGpsLocation(latitude, longitude, accuracy, kommun, tatort) {
+  return {
+    id: "gps-" + Date.now(),
+    label: "Din GPS-position",
+    place: tatort || kommun || "Din position",
+    kommun: kommun || "Okänd kommun",
+    geo: null,
+    status: "unknown",
+    verdict: "Okänt – platsen är inte granskad än",
+    explanation:
+      "Din GPS-position ligger i en kommun som prototypen inte har granskat ännu. Grundregeln: parkering på allmän plats är normalt tillåten i högst 24 timmar, men övernattning i husbil/husvagan räknas som camping om fordonet står i annat syfte än parkering – kontrollera alltid skyltar på platsen.",
+    chips: [
+      latitude.toFixed(4) + "° N, " + longitude.toFixed(4) + "° Ö",
+      "±" + Math.round(accuracy) + " m",
+      "Ej granskad kommun",
+    ],
+    reasons: [
+      "Grundregel: parkering på allmän plats får normalt inte överstiga 24 timmar (trafikföreskrifterna 3 kap. 49 §).",
+      "Övernattning i husbil/husvagan kan räknas som camping om fordonet används för boende på platsen.",
+      "Rapportera in platsen via Rapportera-fliken – granskade kommuner byggs upp successivt.",
+    ],
+    source: "Din GPS-position + OpenStreetMap (Nominatim)",
+    dataSource: "GPS + Nominatim (reverse geocoding)",
+    hasOpenData: false,
+    stadga: null,
+    nearby: [],
+    mapPins: [],
+  };
+}
+
+function normalizeKommun(s) {
+  return (s || "")
+    .toLowerCase()
+    .replace(/\s*(kommun|stad)\s*$/i, "")
+    .replace(/s$/, "")
+    .trim();
+}
+
+function matchLocationByKommun(kommun) {
+  const n = normalizeKommun(kommun);
+  if (!n) return null;
+  return LOCATIONS.find((l) => normalizeKommun(l.kommun) === n) ?? null;
+}
+
 function App() {
   const [locId, setLocId] = useState("gavle-skeppsbron");
   const [tab, setTab] = useState("hem");
   const [reports, setReports] = useState([]);
-  const location = LOCATIONS.find((l) => l.id === locId) ?? LOCATIONS[0];
+  const [gpsMode, setGpsMode] = useState(null);
+
+  const demoLocation = LOCATIONS.find((l) => l.id === locId) ?? LOCATIONS[0];
+  const location = gpsMode && gpsMode.state === "ok" ? gpsMode.location : demoLocation;
+
+  const stopGps = () => setGpsMode(null);
+
+  const startGps = () => {
+    if (!navigator.geolocation) {
+      setGpsMode({ state: "error", error: "Webbläsaren saknar stöd för platstjänster. Använd demoläget." });
+      return;
+    }
+    setGpsMode({ state: "loading" });
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const latitude = pos.coords.latitude;
+        const longitude = pos.coords.longitude;
+        const accuracy = pos.coords.accuracy;
+        fetch(
+          "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
+            latitude +
+            "&lon=" +
+            longitude +
+            "&zoom=14&accept-language=sv"
+        )
+          .then((r) => r.json())
+          .then((j) => {
+            const a = j.address || {};
+            const kommun = a.municipality || a.city || a.town || a.county || null;
+            const tatort = a.town || a.village || a.city || a.municipality || null;
+            const match = matchLocationByKommun(kommun);
+            if (match) {
+              setGpsMode({
+                state: "ok",
+                info: { latitude, longitude, accuracy, kommun: kommun || match.kommun, tatort, matched: true },
+                location: match,
+              });
+            } else {
+              setGpsMode({
+                state: "ok",
+                info: { latitude, longitude, accuracy, kommun, tatort, matched: false },
+                location: buildGpsLocation(latitude, longitude, accuracy, kommun, tatort),
+              });
+            }
+          })
+          .catch(() => {
+            setGpsMode({
+              state: "ok",
+              info: { latitude, longitude, accuracy, kommun: null, tatort: null, matched: false },
+              location: buildGpsLocation(latitude, longitude, accuracy, null, null),
+            });
+          });
+      },
+      (err) => {
+        const msg =
+          err.code === 1
+            ? "Platsåtkomst nekades. Tillåt platsåtkomst i webbläsaren – eller använd demoläget."
+            : err.code === 2
+            ? "Kunde inte hämta din position (ingen signal). Prova utomhus eller använd demoläget."
+            : "Det tog för lång tid att hämta positionen. Försök igen.";
+        setGpsMode({ state: "error", error: msg });
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
+    );
+  };
 
   const tabs = [
     { id: "hem", label: "Hem", icon: HousePin },
@@ -1671,7 +1835,18 @@ function App() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-4">
       <div className="flex h-[860px] w-full max-w-[420px] flex-col overflow-hidden rounded-[2.2rem] border border-slate-700/50 bg-slate-50 shadow-2xl">
-        {tab === "hem" && <HomeScreen location={location} onSelect={setLocId} />}
+        {tab === "hem" && (
+          <HomeScreen
+            location={location}
+            onSelect={(v) => {
+              setGpsMode(null);
+              setLocId(v);
+            }}
+            gpsMode={gpsMode}
+            onLocate={startGps}
+            onStopGps={stopGps}
+          />
+        )}
         {tab === "karta" && (
           <MapScreen location={location} reports={reports} />
         )}
