@@ -383,7 +383,7 @@ const LOCATIONS = [
         },
         {
           ref: "Tolkning",
-          text: "Till skillnad från t.ex. Halmstad jämför inte Gävle övernattning i fordon med camping. Parkerad husbil utan markis/stolar bedöms som parkering.",
+          text: "Till skillnad från t.ex. Halmstad jämför inte Gävle övernattning i fordon med camping. Parkerad husbil/husvagn utan markis/stolar bedöms som parkering.",
         },
         {
           ref: "Lokala trafikföreskrifter (parkering)",
@@ -438,7 +438,7 @@ const LOCATIONS = [
         },
         {
           ref: "Tolkning",
-          text: "Till skillnad från t.ex. Halmstad jämför inte Gävle övernattning i fordon med camping. Parkerad husbil utan markis/stolar bedöms som parkering.",
+          text: "Till skillnad från t.ex. Halmstad jämför inte Gävle övernattning i fordon med camping. Parkerad husbil/husvagn utan markis/stolar bedöms som parkering.",
         },
         {
           ref: "Lokala trafikföreskrifter (parkering)",
@@ -471,7 +471,7 @@ const LOCATIONS = [
     status: "ok",
     verdict: "Ja – utanför detaljplan, campingförbudet gäller inte",
     explanation:
-      "Parkeringen vid Hemlingbystugan ligger i Hemlingby friluftsområde, utanför tätort och detaljplanelagt område. Gävles campingförbud (17 §) gäller bara inom detaljplanelagt område – här är övernattning i parkerad husbil därför tillåten. Platsen är dessutom en registrerad ställplats.",
+      "Parkeringen vid Hemlingbystugan ligger i Hemlingby friluftsområde, utanför tätort och detaljplanelagt område. Gävles campingförbud (17 §) gäller bara inom detaljplanelagt område – här är övernattning i parkerad husbil/husvagn därför tillåten. Platsen är dessutom en registrerad ställplats.",
     chips: ["Avgiftsfri", "Max 3 dagar", "Toalett & vatten", "Året runt"],
     reasons: [
       "Geo-kontroll (SCB 2023, punkt-i-polygon): positionen ligger UTANFÖR tätort Gävle – detaljplansregeln är inte tillämplig.",
@@ -492,7 +492,7 @@ const LOCATIONS = [
         },
         {
           ref: "Tolkning",
-          text: "Till skillnad från t.ex. Halmstad jämför inte Gävle övernattning i fordon med camping. Parkerad husbil utan markis/stolar bedöms som parkering.",
+          text: "Till skillnad från t.ex. Halmstad jämför inte Gävle övernattning i fordon med camping. Parkerad husbil/husvagn utan markis/stolar bedöms som parkering.",
         },
         {
           ref: "Trafikförordningen 3 kap. 49 a §",
@@ -518,7 +518,7 @@ const LOCATIONS = [
     status: "forbidden",
     verdict: "Nej – inom detaljplanelagt område",
     explanation:
-      "Bara några hundra meter norr om Hemlingbystugan, nedanför backen, har du passerat in i Hemlingby bebyggelse och kommunens detaljplanelagda område. Här är camping på offentlig plats förbjuden enligt 17 § – övernattning med husbil tillåts inte, trots att stugparkeringen alldeles söderut är helt fri.",
+      "Bara några hundra meter norr om Hemlingbystugan, nedanför backen, har du passerat in i Hemlingby bebyggelse och kommunens detaljplanelagda område. Här är camping på offentlig plats förbjuden enligt 17 § – övernattning med husbil/husvagn tillåts inte, trots att stugparkeringen alldeles söderut är helt fri.",
     chips: ["17 § campingförbud", "Detaljplan Hemlingby", "Gräns ca 300 m söderut"],
     reasons: [
       "Geo-kontroll: tätorts-/detaljplansgränsen går i en ojämn zon ca 150–300 meter söder om parkeringen (verifierad med punktsökning var 10:e meter).",
@@ -564,12 +564,12 @@ const LOCATIONS = [
     status: "forbidden",
     verdict: "Nej – övernattning förbjuden",
     explanation:
-      "Halmstads lokala ordningsstadga förbjuder camping och därmed jämställd övernattning i fordon på offentlig plats. Övernatta i husbilen räknas här som camping.",
+      "Halmstads lokala ordningsstadga förbjuder camping och därmed jämställd övernattning i fordon på offentlig plats. Övernattning i husbil/husvagn räknas här som camping.",
     chips: ["Ordningsstadga §15", "Endast upplåtna platser", "Kan beivras"],
     reasons: [
       "Ordningsstadgan: camping och därmed jämställd övernattning i fordon får på offentlig plats endast äga rum på platser som kommunen upplåter.",
       "Brott mot lokala ordningsstadgor kan föranleda föreläggande eller avgift.",
-      "Betalda parkeringar i centrala Halmstad upplåts inte för husbilar över natten.",
+      "Betalda parkeringar i centrala Halmstad upplåts inte för husbilar/husvagnar över natten.",
     ],
     source: "Halmstads kommuns lokala ordningsstadga § 15",
     dataSource: "Manuellt granskad ordningsstadga",
@@ -688,7 +688,7 @@ const LOCATIONS = [
     status: "ok",
     verdict: "Troligen ok – kommunen saknar campingparagraf",
     explanation:
-      "Gällivares lokala ordningsföreskrifter (19 §§) innehåller ingen paragraf om camping, husbilar eller övernattning i fordon. När kommunen inte reglerar något gäller de nationella grundreglerna: parkera lagligt, max 24 timmar på allmän plats – kontrollera skyltningen.",
+      "Gällivares lokala ordningsföreskrifter (19 §§) innehåller ingen paragraf om camping, husbilar/husvagnar eller övernattning i fordon. När kommunen inte reglerar något gäller de nationella grundreglerna: parkera lagligt, max 24 timmar på allmän plats – kontrollera skyltningen.",
     chips: ["Fulltext granskad", "Ingen campingparagraf", "24-timmarsregeln"],
     reasons: [
       "Geo-kontroll (SCB 2023): positionen ligger inom tätort Gällivare – men utan campingförbud i stadgan spelar detaljplansfrågan ingen roll här.",
@@ -759,9 +759,9 @@ const LOCATIONS = [
     kommun: "Ockelbo kommun",
     geo: { tatort: "Ockelbo", befolkning: "≈ 2 700" },
     status: "ok",
-    verdict: "Ja – Ockelbo är öppen för husbilar",
+    verdict: "Ja – Ockelbo är öppen för husbil/husvagn",
     explanation:
-      "Ockelbo kommun har inget känt förbud mot övernattning i husbil: ingen lokal ordningsstadga med campingförbud har hittats och inga husbilsspecifika lokala trafikföreskrifter finns i STFS. Parkeringen i kommunen är gratis överallt – tidsbegränsade ytor och skyltning sätter gränserna. Kommunen uppmuntrar till och med fricamping i sin besöksnäringsblogg.",
+      "Ockelbo kommun har inget känt förbud mot övernattning i husbil/husvagn: ingen lokal ordningsstadga med campingförbud har hittats och inga husbils-/husvagnsspecifika lokala trafikföreskrifter finns i STFS. Parkeringen i kommunen är gratis överallt – tidsbegränsade ytor och skyltning sätter gränserna. Kommunen uppmuntrar till och med fricamping i sin besöksnäringsblogg.",
     chips: ["Gratis parkering", "Inget campingförbud", "Ställplatser vid Wij", "24-timmarsregeln"],
     reasons: [
       "Parkeringen i Ockelbo kommun är gratis – inga betalappar eller p-skivor – men vissa parkeringar är tidsbegränsade (ockelbo.se, mars 2026).",
@@ -775,7 +775,7 @@ const LOCATIONS = [
     stadga: {
       stance: "Tillåtande",
       stanceDetail:
-        "Ockelbo har ingen känd lokal ordningsstadga som förbjuder camping eller övernattning på offentlig plats. Ordningslagsärenden (t.ex. anspråk på offentlig plats) hanteras av polisen. Lokala trafikföreskrifter beslutas av kommunstyrelsen och publiceras i Transportstyrelsens register STFS – inga husbilsspecifika föreskrifter finns för kommunen.",
+        "Ockelbo har ingen känd lokal ordningsstadga som förbjuder camping eller övernattning på offentlig plats. Ordningslagsärenden (t.ex. anspråk på offentlig plats) hanteras av polisen. Lokala trafikföreskrifter beslutas av kommunstyrelsen och publiceras i Transportstyrelsens register STFS – inga husbils-/husvagnsspecifika föreskrifter finns för kommunen.",
       paragraphs: [
         {
           ref: "Parkering (ockelbo.se – Gator & torg)",
@@ -816,7 +816,7 @@ const LOCATIONS = [
     status: "ok",
     verdict: "Ja – en natt är ok; två nätter kräver ställplats",
     explanation:
-      "Sandvikens lokala ordningsföreskrifter (22 §) definierar camping som övernattning mer än en natt – och camping med husbil är bara tillåten på angiven plats. En enskild övernattning i husbilen är alltså per definition inte camping och tillåten överallt där parkering får ske. Parkeringen i centrala Sandviken är gratis på cirka 700 allmänna platser.",
+      "Sandvikens lokala ordningsföreskrifter (22 §) definierar camping som övernattning mer än en natt – och camping med husbil/husvagn är bara tillåten på angiven plats. En enskild övernattning i husbilen/husvagnen är alltså per definition inte camping och tillåten överallt där parkering får ske. Parkeringen i centrala Sandviken är gratis på cirka 700 allmänna platser.",
     chips: ["Camping = 2+ nätter", "Gratis parkering i centrum", "Datumparkering vintertid", "Ställplatser: Högbo & Hedås"],
     reasons: [
       "Ordningsföreskrifterna 22 §: “Camping, med tält, husvagn eller husbil, är endast tillåten på därför angiven plats. Med camping avses övernattning mer än en (1) natt.” – en enskild natt i husbilen är alltså inte camping.",
@@ -830,7 +830,7 @@ const LOCATIONS = [
     stadga: {
       stance: "Reglerat",
       stanceDetail:
-        "Sandviken reglerar camping i sina lokala ordningsföreskrifter – men med en ovanligt husbilsvänlig definition: camping betyder övernattning mer än en natt. En natt i husbilen räknas alltså inte som camping och är tillåten där parkering får ske. Övernattar du två nätter eller mer krävs angiven plats (ställplats/camping). Överträdelse av 22 § kan ge penningböter (25 §).",
+        "Sandviken reglerar camping i sina lokala ordningsföreskrifter – men med en ovanligt husbils- och husvagnsvänlig definition: camping betyder övernattning mer än en natt. En natt i husbil/husvagn räknas alltså inte som camping och är tillåten där parkering får ske. Övernattar du två nätter eller mer krävs angiven plats (ställplats/camping). Överträdelse av 22 § kan ge penningböter (25 §).",
       paragraphs: [
         {
           ref: "Lokala ordningsföreskrifterna 22 § (KFS, fastställda 2022-04-19)",
@@ -838,7 +838,7 @@ const LOCATIONS = [
         },
         {
           ref: "Tolkning",
-          text: "Till skillnad från t.ex. Halmstad, som räknar varje övernattning i fordon som camping, exkluderar Sandviken uttryckligen en enskild natt – en natt i husbilen på laglig parkering är därför ok.",
+          text: "Till skillnad från t.ex. Halmstad, som räknar varje övernattning i fordon som camping, exkluderar Sandviken uttryckligen en enskild natt – en natt i husbil/husvagn på laglig parkering är därför ok.",
         },
         {
           ref: "Lokala ordningsföreskrifterna 25 §",
@@ -1551,7 +1551,7 @@ function ReportScreen({ location, reports, onSubmit }) {
           Skicka rapport
         </button>
         <p className="mt-2 text-center text-[11px] text-slate-400">
-          Din rapport syns direkt på kartan och hjälper andra husbilsägare.
+          Din rapport syns direkt på kartan och hjälper andra husbils- och husvagnsägare.
         </p>
       </div>
 
@@ -1620,7 +1620,7 @@ const COVERAGE_LAYERS = [
     measured: true,
   },
   {
-    name: "Stadga med camping-/husbilsregel",
+    name: "Stadga med camping-/fordonsregel",
     count: 210,
     note: "Uppskattning – 7 av 10 i stickprovet",
     measured: false,
@@ -1830,7 +1830,7 @@ function buildGpsLocation(latitude, longitude, accuracy, kommun, tatort) {
     status: "unknown",
     verdict: "Okänt – platsen är inte granskad än",
     explanation:
-      "Din GPS-position ligger i en kommun som prototypen inte har granskat ännu. Grundregeln: parkering på allmän plats är normalt tillåten i högst 24 timmar, men övernattning i husbil/husvagan räknas som camping om fordonet står i annat syfte än parkering – kontrollera alltid skyltar på platsen.",
+      "Din GPS-position ligger i en kommun som prototypen inte har granskat ännu. Grundregeln: parkering på allmän plats är normalt tillåten i högst 24 timmar, men övernattning i husbil/husvagn räknas som camping om fordonet står i annat syfte än parkering – kontrollera alltid skyltar på platsen.",
     chips: [
       latitude.toFixed(4) + "° N, " + longitude.toFixed(4) + "° Ö",
       "±" + Math.round(accuracy) + " m",
@@ -1838,7 +1838,7 @@ function buildGpsLocation(latitude, longitude, accuracy, kommun, tatort) {
     ],
     reasons: [
       "Grundregel: parkering på allmän plats får normalt inte överstiga 24 timmar (trafikföreskrifterna 3 kap. 49 §).",
-      "Övernattning i husbil/husvagan kan räknas som camping om fordonet används för boende på platsen.",
+      "Övernattning i husbil/husvagn kan räknas som camping om fordonet används för boende på platsen.",
       "Rapportera in platsen via Rapportera-fliken – granskade kommuner byggs upp successivt.",
     ],
     source: "Din GPS-position + OpenStreetMap (Nominatim)",
