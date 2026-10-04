@@ -1709,8 +1709,45 @@ function App() {
   );
 }
 
+      class ErrorBoundary extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = { error: null };
+        }
+        static getDerivedStateFromError(error) {
+          return { error: error };
+        }
+        render() {
+          if (this.state.error) {
+            const err = this.state.error;
+            return (
+              <div style={{ minHeight: "100vh", padding: "24px", fontFamily: "system-ui, sans-serif", background: "#fef2f2", color: "#7f1d1d" }}>
+                <h1 style={{ fontSize: "18px", fontWeight: "700" }}>Appen stötte på ett fel</h1>
+                <p style={{ fontSize: "13px", marginTop: "8px" }}>
+                  Skärmdumpa det röda fältet nedan och skicka det i chatten – då hittar vi felet exakt.
+                </p>
+                <pre style={{ whiteSpace: "pre-wrap", fontSize: "12px", background: "#fff", border: "1px solid #fecaca", borderRadius: "8px", padding: "12px", marginTop: "8px" }}>
+                  {String((err && err.message) || err)}
+                </pre>
+                <pre style={{ whiteSpace: "pre-wrap", fontSize: "10px", marginTop: "8px", opacity: "0.7" }}>
+                  {String((err && err.stack) || "")}
+                </pre>
+                <button onClick={() => window.location.reload()} style={{ marginTop: "12px", padding: "10px 16px", borderRadius: "8px", background: "#b91c1c", color: "#fff", border: "none", fontSize: "14px", fontWeight: "600" }}>
+                  Ladda om appen
+                </button>
+              </div>
+            );
+          }
+          return this.props.children;
+        }
+      }
+
       const root = ReactDOM.createRoot(document.getElementById("root"));
-      root.render(<App />);
+      root.render(
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
+      );
     </script>
   </body>
 </html>
