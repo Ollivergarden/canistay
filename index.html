@@ -313,7 +313,7 @@
         </IconWrap>
       );
 
-      const Map = ({ className }) => (
+      const MapIcon = ({ className }) => (
         <IconWrap className={className}>
           <path d="M3 6.2 9 4l6 2 6-2v13.8l-6 2-6-2-6 2V6.2Z" />
           <path d="M9 4v14" />
@@ -1189,7 +1189,7 @@ function MapScreen({ location, reports }) {
   return (
     <div className="flex-1 overflow-y-auto">
       <StatusBar />
-      <ScreenHeader title="Karta" subtitle={`${location.kommun} · ${location.place}`} icon={Map} iconBg="bg-emerald-600" />
+      <ScreenHeader title="Karta" subtitle={`${location.kommun} · ${location.place}`} icon={MapIcon} iconBg="bg-emerald-600" />
 
       {/* Map */}
       <div className="px-5">
@@ -1662,7 +1662,7 @@ function App() {
 
   const tabs = [
     { id: "hem", label: "Hem", icon: HousePin },
-    { id: "karta", label: "Karta", icon: Map },
+    { id: "karta", label: "Karta", icon: MapIcon },
     { id: "regler", label: "Regler", icon: Book },
     { id: "tackning", label: "Täckning", icon: Navigation },
     { id: "rapportera", label: "Rapportera", icon: PinPlus },
