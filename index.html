@@ -862,6 +862,61 @@ const LOCATIONS = [
       { id: "p3", kind: "stallplats", name: "Ställplats Oslättfors", note: "Oslättforsvägen · nära badplats · året runt", x: 28, y: 28 },
     ],
   },
+  {
+    id: "hedemora-kommun",
+    label: "Hedemora kommun (manuellt granskad)",
+    place: "Hedemora",
+    kommun: "Hedemora kommun",
+    geo: { tatort: "Hedemora", befolkning: "≈ 7 500" },
+    status: "check",
+    verdict: "Troligen ok – campingförbudet gäller bara inom detaljplan",
+    explanation:
+      "Hedemoras lokala ordningsföreskrifter (19 §) förbjuder camping på offentlig plats inom detaljplanelagt område, annat än på platser som tillåter camping – samma modell som Gävle. Övernattning i parkerad husbil/husvagn utan markis och stolar bedöms normalt som parkering, inte camping. Utanför detaljplanelagt område gäller inte förbudet alls. Parkeringen i centrala Hedemora är gratis men kräver p-skiva.",
+    chips: ["Campingförbud inom detaljplan", "Gratis parkering – p-skiva", "Datumparkering vintertid", "Ställplatser: Folkets Park & Kloster"],
+    reasons: [
+      "Ordningsföreskrifterna 19 § (giltiga fr.o.m. 2024-02-24): “Camping får inte ske på offentlig plats inom detaljplanelagt område, annat än på platser som tillåter camping.”",
+      "Föreskrifterna definierar inte camping som övernattning i fordon – vanlig tolkning är att en parkerad husbil/husvagn utan upplägg (markis, stolar, förtält) är parkering.",
+      "Kommunala parkeringar i centrala Hedemora är gratis, men p-skiva krävs. Bevakning sker även kvällar och nätter av kommunens upphandlade bolag.",
+      "Vintertid (1 okt–31 mars, 00–08) gäller datumparkering i hela centrala Hedemora – stå på den gatusida som matchar dagens datum.",
+    ],
+    source: "hedemora.se (Allmänna lokala ordningsföreskrifter · Parkering · Datumparkering) · hedemoraparken.se",
+    dataSource: "Manuellt granskad kommun (okt 2026)",
+    hasOpenData: false,
+    stadga: {
+      stance: "Reglerat",
+      stanceDetail:
+        "Hedemora reglerar camping enligt Gävle-modellen: förbud på offentlig plats inom detaljplanelagt område, utom platser som tillåter camping. Utanför detaljplan gäller inte förbudet. Övernattning i parkerat fordon nämns inte som camping i föreskrifterna – vanlig tolkning är att diskret övernattning utan upplägg är parkering. Överträdelse av 19 § kan ge penningböter (21 §).",
+      paragraphs: [
+        {
+          ref: "Allmänna lokala ordningsföreskrifterna 19 § (giltiga fr.o.m. 2024-02-24)",
+          text: "“Camping får inte ske på offentlig plats inom detaljplanelagt område, annat än på platser som tillåter camping.”",
+        },
+        {
+          ref: "Tolkning",
+          text: "Till skillnad från Halmstad jämför inte Hedemora övernattning i fordon med camping. Parkerad husbil/husvagn utan markis/stolar bedöms som parkering. Inom detaljplan bör du dock välja plats med omsorg – och ställplatser finns.",
+        },
+        {
+          ref: "Allmänna lokala ordningsföreskrifterna 21 §",
+          text: "Den som uppsåtligen eller av oaktsamhet bryter mot föreskrifterna kan dömas till penningböter enligt ordningslagen 3 kap. 22 § andra stycket.",
+        },
+        {
+          ref: "Parkering (hedemora.se)",
+          text: "Kommunala parkeringar i centrala Hedemora är gratis men kräver p-skiva. Datumparkering gäller 1 okt–31 mars kl. 00–08 i hela centrala Hedemora, även i markerade rutor; det finns även en parkeringsförbudszon. Bevakning sker kvällar och nätter.",
+        },
+      ],
+      link: "hedemora.se – Allmänna lokala ordningsföreskrifter · Parkering · Datumparkering",
+    },
+    nearby: [
+      { name: "Hedemora Folkets Park", distance: "Österbyvägen 7, ca 2 km norr om centrum", price: "10 platser · 200 kr/natt · el · WC, dusch & bastu · året runt" },
+      { name: "Ställplats Kloster", distance: "Klosters herrgård, Husby socken", price: "Enkel ställplats · naturmiljö" },
+      { name: "Gustavsnäsviken, Långshyttan", distance: "Badplatsen vid sjön Lången", price: "Ställplats vid badplats" },
+    ],
+    mapPins: [
+      { id: "p1", kind: "stallplats", name: "Hedemora Folkets Park", note: "Österbyvägen 7 · 10 platser · 200 kr/natt · el · WC, dusch & bastu · året runt", x: 45, y: 42 },
+      { id: "p2", kind: "stallplats", name: "Ställplats Kloster", note: "Klosters herrgård · enkel ställplats · naturmiljö", x: 68, y: 30 },
+      { id: "p3", kind: "stallplats", name: "Gustavsnäsviken, Långshyttan", note: "Vid badplatsen vid sjön Lången · ställplats", x: 28, y: 62 },
+    ],
+  },
 ];
 
 const STATUS_STYLE = {
