@@ -917,6 +917,61 @@ const LOCATIONS = [
       { id: "p3", kind: "stallplats", name: "Gustavsnäsviken, Långshyttan", note: "Vid badplatsen vid sjön Lången · naturnära", x: 30, y: 26 },
     ],
   },
+  {
+    id: "avesta-kommun",
+    label: "Avesta kommun (manuellt granskad)",
+    place: "Avesta",
+    kommun: "Avesta kommun",
+    geo: { tatort: "Avesta", befolkning: "≈ 11 000" },
+    status: "check",
+    verdict: "Troligen ok – kontrollera skyltning",
+    explanation:
+      "Avesta är välfött med avgiftsfria parkeringsplatser – i centrala Avesta, vid resecentret i Krylbo och i Skogsbo. Ingen campingregel har hittats i kommunens ordningsföreskrifter, men fulltexten kunde inte läsas online vid granskningen (okt 2026) – kontrollera därför skyltning på plats. Observera parkeringsförbudszonen i Avesta tätort: inom zonen får du bara stå på uppmärkta platser.",
+    chips: ["Avgiftsfri parkering", "P-förbudszon i tätort", "24-timmarsregeln", "Ställplats vid Dalälven"],
+    reasons: [
+      "Centrala Avesta, resecentret vid Avesta/Krylbo station och affärsområdet Skogsbo har avgiftsfria parkeringsplatser (avesta.se).",
+      "Ingen känd campingregel i kommunens lokala ordningsföreskrifter – men fulltexten kunde inte verifieras online vid granskningen, så skyltning på platsen har extra stor betydelse.",
+      "Parkeringsförbudszon i Avesta tätort (vägmärke E20): inom zonen är parkering bara tillåten på uppmärkta parkeringsplatser.",
+      "Grundregeln: parkering på gata/allmän väg max 24 timmar i följd på vardagar; tillfälligt parkeringstillstånd kan sökas för upp till 3 dygn; långtidsparkering Vintervägen i Krylbo (7 dygn).",
+    ],
+    source: "avesta.se (Parkering · Parkeringsförbudszon · Långtidsparkering) · vandrarhemavesta.se",
+    dataSource: "Manuellt granskad kommun (okt 2026)",
+    hasOpenData: false,
+    stadga: {
+      stance: "Ingen regel (ej fullt verifierad)",
+      stanceDetail:
+        "Avesta kommuns lokala ordningsföreskrifter beslutas av kommunfullmäktige med stöd av förordningen (1993:1632). I tillgängliga sammanställningar finns ingen campingparagraf, men fulltexten kunde inte läsas online vid granskningen – statusen är därför 'ingen känd regel' snarare än 'verifierad ingen regel'. Lokala trafikföreskrifter beslutas av kommunen och publiceras i Transportstyrelsens register STFS; kommunen har kommunal parkeringskontroll sedan 1997.",
+      paragraphs: [
+        {
+          ref: "Lokala ordningsföreskrifter (avesta.se)",
+          text: "Föreskrifterna är ett tillägg till ordningslagen som bara gäller i Avesta kommun och beslutas av kommunfullmäktige. Ingen campingparagraf har påträffats i tillgängliga källor – fulltexten bör begäras från kommunen för fullständig verifiering.",
+        },
+        {
+          ref: "Parkering (avesta.se)",
+          text: "“Avesta kommun är välförsedd med avgiftsfria parkeringsplatser, såväl i centrala Avesta som resecentret vid Avesta/Krylbo station samt affärsområdet i Skogsbo.”",
+        },
+        {
+          ref: "Parkeringsförbudszon (avesta.se)",
+          text: "“En parkeringsförbudszon är ett område där det är förbjudet att parkera på platser som saknar parkeringsskylt.” – gäller i Avesta tätortsområde enligt kommunens karta.",
+        },
+        {
+          ref: "Trafikförordningen 3 kap. 49 a §",
+          text: "Parkering på allmän plats i tätbebyggt område tillåten i 24 timmar.",
+        },
+      ],
+      link: "avesta.se – Parkering · Parkeringsförbudszon · Lokala trafikföreskrifter",
+    },
+    nearby: [
+      { name: "56:ans Café (ställplats)", distance: "Stationsgatan 8, vid Dalälven", price: "30 platser · 75 kr · året runt" },
+      { name: "Avesta Golfklubb", distance: "Ställplatser med el", price: "Bokning via klubben" },
+      { name: "Falkudden Camping", distance: "Byn Näs, öster om Avesta", price: "35 platser · vid Dalälven · bad & fiske" },
+    ],
+    mapPins: [
+      { id: "p1", kind: "stallplats", name: "56:ans Café", note: "Stationsgatan 8 · intill Dalälven · 30 platser · 75 kr · året runt · 200 m från stationen", x: 50, y: 50 },
+      { id: "p2", kind: "stallplats", name: "Avesta Golfklubb", note: "Ställplatser med el · bokning via kansliet · restaurang och omklädningsrum", x: 72, y: 34 },
+      { id: "p3", kind: "stallplats", name: "Falkudden Camping", note: "Byn Näs · 35 platser för husvagn/husbil/tält · vid Dalälven · badstrand, fiske, kanoter", x: 26, y: 70 },
+    ],
+  },
 ];
 
 const STATUS_STYLE = {
