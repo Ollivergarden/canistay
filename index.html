@@ -972,6 +972,226 @@ const LOCATIONS = [
       { id: "p3", kind: "stallplats", name: "Falkudden Camping", note: "Byn Näs · 35 platser för husvagn/husbil/tält · vid Dalälven · badstrand, fiske, kanoter", x: 26, y: 70 },
     ],
   },
+  {
+    id: "reservat-trollberget",
+    label: "Trollberget naturreservat (manuellt granskad)",
+    place: "Trollberget, Ockelbo",
+    kommun: "Ockelbo kommun",
+    geo: { tatort: "Ekbo/Lingbo", befolkning: "70 ha · skyddat 2017" },
+    status: "check",
+    verdict: "Troligen ok – inget campingförbud i reservatsföreskrifterna",
+    explanation:
+      "Trollbergets reservatsföreskrifter innehåller inget förbud mot camping, tältning eller uppställning av fordon – övernattning i husbil/husvagn på en laglig parkering är alltså inte förbjuden av föreskrifterna. Däremot är motorfordon bara tillåtna på väg avsedd för motorfordonstrafik, och eldning är endast tillåten på anvisad plats (eldplatsen vid Stråkbron) med medtagen eller tillhandahållen ved. Skyltning och parkeringsregler på platsen kan ändå begränsa övernattning.",
+    chips: ["Motorfordon endast på väg", "Eldning endast vid Stråkbron", "Inget tält-/campingförbud", "Enkel parkering vid Ekbo"],
+    reasons: [
+      "Föreskrifterna (Länsstyrelsen Gävleborg): “Utöver vad som gäller enligt andra författningar är det förbjudet att […] elda annat än på anvisad plats med medtagen eller tillhandahållen ved” och att “framföra motordrivet fordon annat än på väg som är avsedd för motorfordonstrafik”. Camping, tältning eller övernattning nämns inte – övernattning i fordon är alltså inte förbjuden av reservatsföreskrifterna.",
+      "Enkel parkering finns cirka 300 meter in på skogsbilvägen söder om stugviken vid Ekbo (koordinater WGS84: lat 60,9959 lon 16,7457).",
+      "Eldning är endast tillåten på eldplatsen vid Stråkbron – med medtagen eller tillhandahållen ved; att plocka ved/kvistar i reservatet är förbjudet.",
+      "Ockelbo kommun har inget campingförbud i lokala ordningsföreskrifter – kommunal regel begränsar inte övernattningen heller.",
+    ],
+    source: "Länsstyrelsen Gävleborg – Trollberget (besöksmålssida med föreskrifter) · ockelbo.se",
+    dataSource: "Manuellt granskat naturreservat (okt 2026)",
+    hasOpenData: false,
+    stadga: {
+      stance: "Inget campingförbud i föreskrifterna",
+      stanceDetail:
+        "Trollbergets ordningsföreskrifter (beslut 2017, Länsstyrelsen Gävleborg) förbjuder terrängkörning, eldning utanför anvisad plats, kvistbrytning och skadliga ingrepp – men saknar helt regler om camping, tältning eller uppställning av husbil/husvagn. Övernattning i fordon på parkering vid Ekbo omfattas därför inte av något känt förbud; parks skyltning kan dock begränsa tiden. Terrängkörningslagen gäller alltid: fordonet måste stå på väg/parkering, aldrig i terrängen.",
+      paragraphs: [
+        {
+          ref: "Reservatsföreskrifterna (lansstyrelsen.se, Trollberget)",
+          text: "“Utöver vad som gäller enligt andra författningar är det förbjudet att […] elda annat än på anvisad plats med medtagen eller tillhandahållen ved […] framföra motordrivet fordon annat än på väg som är avsedd för motorfordonstrafik.”",
+        },
+        {
+          ref: "Tolkning",
+          text: "Föreskrifterna reglerar färd och eldning, men säger inget om övernattning eller uppställning av fordon. En husbil/husvagn som står kvar över natten på parkeringen vid Ekbo bryter därmed inte mot reservatsföreskrifterna.",
+        },
+        {
+          ref: "Hitta hit (lansstyrelsen.se)",
+          text: "“Åk väg 272 mellan Ockelbo och Lingbo. Ta av vid skyltningen mot Ekbo […] enklare parkering finns efter cirka 300 meter.” Eldplats och rastplats finns vid Stråkbron.",
+        },
+        {
+          ref: "Terrängkörningslagen",
+          text: "Det är alltid förbjudet att köra med motorfordon i terräng – husbilen/husvagnen måste stå på väg eller anlagd parkering.",
+        },
+      ],
+      link: "lansstyrelsen.se/gavleborg – Trollberget (föreskrifter)",
+    },
+    nearby: [
+      { name: "Parkering Ekbo", distance: "Skogsbilvägen söder om stugviken", price: "Enkel parkering · ca 300 m in" },
+      { name: "Raggsocka Logi", distance: "Vigatan 2, Ockelbo (ca 20 km)", price: "12 platser · el 10 A · dusch/WC · wifi" },
+      { name: "Medskogsjöns Camping", distance: "Åmot, vid väg 272", price: "Camping · badplats · restaurang" },
+    ],
+    mapPins: [
+      { id: "p1", kind: "rapport", name: "Parkering Ekbo", note: "Enkel parkering ca 300 m in på skogsbilvägen · reservatets entré · koordinater 60,9959 / 16,7457", x: 50, y: 55 },
+      { id: "p2", kind: "rapport", name: "Eldplats vid Stråkbron", note: "Enda platsen där eldning är tillåten · medtagen eller tillhandahållen ved", x: 62, y: 40 },
+      { id: "p3", kind: "stallplats", name: "Raggsocka Logi", note: "Vigatan 2, Ockelbo · 12 platser · el · full service", x: 25, y: 70 },
+    ],
+  },
+  {
+    id: "reservat-lundbosjon",
+    label: "Lundbosjön naturreservat (manuellt granskad)",
+    place: "Lundbosjön, Oslättfors",
+    kommun: "Gävle kommun",
+    geo: { tatort: "Oslättfors", befolkning: "Reservat sedan 2019" },
+    status: "check",
+    verdict: "Troligen ok – inget campingförbud i föreskrifterna",
+    explanation:
+      "Lundbosjöns reservatsföreskrifter (21FS 2019:16, fulltext läst) förbjuder motorfordon utanför väg, snöskoter undantaget på väl snötäckt underlag – men innehåller inget förbud mot camping, tältning eller övernattning. En husbil/husvagn som parkeras lagligt vid entrén (Oslättfors) och stannar över natten bryter inte mot föreskrifterna. Eldning är tillåten, men bara med utlagd eller egen medhavd ved. Notera tillträdesförbudet 1/4–31/7 på vissa platser.",
+    chips: ["Fulltext granskad (21FS 2019:16)", "Motorfordon endast på väg", "Eldning med egen/utlagd ved", "Tillträdesförbud 1/4–31/7"],
+    reasons: [
+      "Föreskrift 1: “det är förbjudet att framföra motordrivet fordon, annat än på väg som är avsedd för motorfordonstrafik” – fordonet måste stå på väg/parkering.",
+      "Föreskrift 4: “ta ved, eldning är endast tillåten med utlagd eller egen medhavd ved” – eldning är tillåten i princip, men aldrig med ved från reservatet.",
+      "Ingen av föreskrifterna 1–13 rör camping, tältning eller övernattning – övernattning i fordon är inte förbjuden av reservatsföreskrifterna.",
+      "Föreskrift 11: tillträdesförbud 1/4–31/7 på vissa i terrängen markerade platser (fågelskydd) – gäller visning, inte parkerade fordon på väg.",
+    ],
+    source: "Länsstyrelsen Gävleborg – 21FS 2019:16 (fulltext) · besöksmålssidan Lundbosjön",
+    dataSource: "Manuellt granskat naturreservat (okt 2026)",
+    hasOpenData: false,
+    stadga: {
+      stance: "Inget campingförbud i föreskrifterna",
+      stanceDetail:
+        "Lundbosjöns naturreservat bildades 2019 (beslut 4 nov 2019, dnr 8700-2016) och omfattar Gävle och Ockelbo kommuner. De tretton ordningsföreskrifterna reglerar färd, eldning, växt- och djurliv samt tillträdesförbud – camping, tältning eller uppställning av fordon nämns inte. Övernattning i husbil/husvagn på laglig parkering är därför inte förbjuden av föreskrifterna; skyltning på platsen kan dock begränsa parkeringstiden.",
+      paragraphs: [
+        {
+          ref: "21FS 2019:16, föreskrift 1",
+          text: "“Utöver vad som gäller enligt andra författningar är det förbjudet att 1. framföra motordrivet fordon, annat än på väg som är avsedd för motorfordonstrafik.”",
+        },
+        {
+          ref: "21FS 2019:16, föreskrift 4",
+          text: "“ta ved, eldning är endast tillåten med utlagd eller egen medhavd ved.”",
+        },
+        {
+          ref: "Tolkning",
+          text: "Föreskrifterna (1–13) innehåller ingen camping-, tält- eller övernattningsregel. En parkerad husbil/husvagn över natt på väg/parkering bryter inte mot reservatsföreskrifterna – däremot gäller alltid terrängkörningslagen och eventuell lokal skyltning.",
+        },
+        {
+          ref: "21FS 2019:16, föreskrift 11",
+          text: "“under tiden 1/4 - 31/7 beträda platser som i terrängen markerats med tillträdesförbud” – rör utmarkerade fågelskyddsområden, inte parkerade fordon.",
+        },
+      ],
+      link: "lansstyrelsen.se/gavleborg – 21FS 2019:16 Lundbosjön",
+    },
+    nearby: [
+      { name: "Oslättfors (reservatets entré)", distance: "Före detta bruksorten, väg 272", price: "Naturlig väg in i reservatet" },
+      { name: "Ställplats Oslättfors", distance: "Oslättforsvägen, Sandvikens kommun", price: "Nära badplats · året runt" },
+      { name: "Raggsocka Logi", distance: "Vigatan 2, Ockelbo", price: "12 platser · el 10 A · dusch/WC · wifi" },
+    ],
+    mapPins: [
+      { id: "p1", kind: "rapport", name: "Entré Oslättfors", note: "Bruksorten Oslättfors är den naturliga ingången till reservatet · kanot- och fiskevatten", x: 50, y: 50 },
+      { id: "p2", kind: "stallplats", name: "Ställplats Oslättfors", note: "Oslättforsvägen · nära badplats · året runt (Sandvikens kommun)", x: 65, y: 35 },
+      { id: "p3", kind: "rapport", name: "Tillträdesförbud 1/4–31/7", note: "Markerade platser (fågelskydd) · gäller beträde, inte parkerade fordon", x: 35, y: 65 },
+    ],
+  },
+  {
+    id: "reservat-vasterhallarna",
+    label: "Västerhällarna naturreservat (manuellt granskad)",
+    place: "Västerhällarna, Sandviken",
+    kommun: "Sandviken kommun",
+    geo: { tatort: "Sandviken", befolkning: "Reservat sedan 2021" },
+    status: "check",
+    verdict: "Troligen ok – inget campingförbud i föreskrifterna",
+    explanation:
+      "Västerhällarnas reservatsföreskrifter (21FS 2021:6, fulltext läst) förbjuder motorfordon utanför väg (snöskoter på skoterled undantaget) och att ta ved – men innehåller inget förbud mot camping, tältning eller övernattning. Övernattning i husbil/husvagn på reservatets parkering är därför inte förbjuden av föreskrifterna; skyltning på platsen kan ändå begränsa. Eldning är inte särskilt reglerad i föreskrifterna, men vindskydd med eldstäder finns – använd dem, eftersom det är förbjudet att ta ved.",
+    chips: ["Fulltext granskad (21FS 2021:6)", "Motorfordon endast på väg", "Förbjudet att ta ved", "Vindskydd med eldstäder"],
+    reasons: [
+      "Föreskrift 1: “det är förbjudet att framföra motordrivet fordon annat än på väg som är avsedd för motorfordonstrafik” – undantag för snöskoter på skoterled, spårdragningsfordon och underhåll.",
+      "Föreskrift 2: “ta ved” är förbjudet – ta med eget bränsle eller använd tillhandahållen ved vid eldstäderna.",
+      "Föreskrifterna (1–9) saknar helt regler om camping, tältning eller övernattning – övernattning i fordon omfattas inte av något förbud.",
+      "Sandvikens ordningsföreskrifter tillåter dessutom en natts övernattning per definition (camping = mer än en natt).",
+    ],
+    source: "Länsstyrelsen Gävleborg – 21FS 2021:6 (fulltext) · besöksmålssidan Västerhällarna",
+    dataSource: "Manuellt granskat naturreservat (okt 2026)",
+    hasOpenData: false,
+    stadga: {
+      stance: "Inget campingförbud i föreskrifterna",
+      stanceDetail:
+        "Västerhällarnas naturreservat bildades 2021 (beslut 27 sep 2021, dnr 5166-11) i Sandvikens kommun. De nio ordningsföreskrifterna reglerar motorfordon, ved, växt- och djurliv, skyltning och arrangemang – camping, tältning eller övernattning nämns inte. Övernattning i husbil/husvagn på parkering är därför inte förbjuden av reservatsföreskrifterna. Sandvikens lokala ordningsföreskrifter tillåter dessutom en enskild natt per definition. Kontrollera skyltning på parkeringen.",
+      paragraphs: [
+        {
+          ref: "21FS 2021:6, föreskrift 1",
+          text: "“Utöver vad som gäller enligt andra författningar är det förbjudet att: 1. framföra motordrivet fordon annat än på väg som är avsedd för motorfordonstrafik. Undantag gäller för: a) körning med snöskoter vintertid på fruset och väl snötäckt underlag på skoterled […] b) körning med fordon för spårdragning och underhåll av skidspår […]”",
+        },
+        {
+          ref: "21FS 2021:6, föreskrift 2",
+          text: "“ta ved” – det är förbjudet att samla ved i reservatet; elda med medtaget bränsle eller iordningsställda eldstäder vid vindskydden.",
+        },
+        {
+          ref: "Tolkning",
+          text: "Föreskrifterna 1–9 innehåller ingen camping-, tält- eller övernattningsregel. Kombinerat med Sandvikens kommunala tolkning (en natt = inte camping) är en natt i husbil/husvagn på reservatets parkering sannolikt ok.",
+        },
+        {
+          ref: "Anordningar",
+          text: "Reservatet har vindskydd, rastplats och eldstäder som förvaltaren underhåller – elda där, med medtaget bränsle.",
+        },
+      ],
+      link: "lansstyrelsen.se/gavleborg – 21FS 2021:6 Västerhällarna",
+    },
+    nearby: [
+      { name: "Högbo Bruks Ställplats", distance: "Hans Hiertas väg 17, Högbo", price: "Från 200 kr/natt · 15 platser · el · dusch & bastu" },
+      { name: "Hedåsbadet", distance: "Storsjön, söder om Sandviken centrum", price: "8 ställplatser · badsäsong" },
+      { name: "Ställplats Oslättfors", distance: "Oslättforsvägen, Oslättfors", price: "Nära badplats · året runt" },
+    ],
+    mapPins: [
+      { id: "p1", kind: "rapport", name: "Västerhällarna", note: "Utsiktsberg vid Storsjön · stigar, vindskydd och eldstäder", x: 50, y: 42 },
+      { id: "p2", kind: "stallplats", name: "Högbo Bruks Ställplats", note: "Hans Hiertas väg 17 · 15 platser · el · dusch & bastu · året runt", x: 40, y: 65 },
+      { id: "p3", kind: "stallplats", name: "Hedåsbadet", note: "Storsjön · 8 ställplatser · badsäsong", x: 68, y: 55 },
+    ],
+  },
+  {
+    id: "nationalpark-farnebofjarden",
+    label: "Färnebofjärdens nationalpark (manuellt granskad)",
+    place: "Färnebofjärden, Nedre Dalälven",
+    kommun: "Avesta kommun",
+    geo: { tatort: "Gysinge/Sevedskvarn", befolkning: "Nationalpark sedan 1998" },
+    status: "check",
+    verdict: "Troligen ok i fordon – tältning bara på parkens tältplatser",
+    explanation:
+      "Färnebofjärdens nationalpark (NFS 2014:16) spänner över Gävleborg, Dalarna, Uppsala och Västmanland – alltså Avesta och Sandvikens kommuner. Parkens föreskrifter tillåter tältning endast på de fyra tältplatserna och förbjuder eldning utanför anvisad plats, men reglerar inte övernattning i fordon. En natt i husbilen på en entréparkering är därför sannolikt ok – men okopplad hund får inte tas in i parken och i fågelskyddsområden råder tillträdesförbud delar av året. Kontrollera skyltning vid entréerna.",
+    chips: ["Tältning endast 4 tältplatser", "Eldning endast anvisad plats", "Koppelkrav för hund", "Tillträdesförbud i fågelskyddsområden"],
+    reasons: [
+      "Tältning är tillåten endast på parkens fyra tältplatser – fri tältning enligt allemansrätten gäller inte i nationalparken.",
+      "Eldning är endast tillåten på anvisad plats med tillhandahållen ved; friluftskök och medhavd grill räknas dock inte som eldning.",
+      "Okopplad hund får inte tas in i nationalparken (Länsstyrelsen Gävleborg).",
+      "Övernattning i husbil/husvagn på entréparkering regleras inte av parkens föreskrifter – vanliga parkeringsregler och skyltning gäller; Avesta har ingen känd campingregel och Sandviken tillåter en natt per definition.",
+    ],
+    source: "Sveriges nationalparker (Färnebofjärden) · Länsstyrelsen Gävleborg · NFS 2014:16",
+    dataSource: "Manuellt granskad nationalpark (okt 2026)",
+    hasOpenData: false,
+    stadga: {
+      stance: "Reglerat (nationalparksföreskrifter)",
+      stanceDetail:
+        "Färnebofjärdens nationalpark bildades 1998 och skyddar ett unikt älvlandskap vid Nedre Dalälven med över 200 öar och 205 fågelarter. Föreskrifterna (NFS 2014:16, kompletterade NFS 2014:26) begränsar allemansrätten: tältning endast på fyra tältplatser, eldning endast på anvisad plats (friluftskök undantaget), koppelkrav för hund och tillträdesförbud i fågelskyddsområden. Övernattning i fordon på parkering nämns inte – vanliga parkeringsregler gäller, och kommunerna runt parken (Avesta, Sandviken) har inget nattförbud för en enskild natt.",
+      paragraphs: [
+        {
+          ref: "Parkens regler (sverigesnationalparker.se)",
+          text: "Tältning är tillåten endast på de fyra tältplatserna; eldning endast på anvisad plats där det finns tillhandahållen ved – att plocka kvistar och grenar är förbjudet.",
+        },
+        {
+          ref: "Tolkning",
+          text: "Föreskrifterna reglerar tältning och eldning, men inte övernattning i parkerat fordon. En husbil/husvagn på en entréparkering är parkering – kombinerat med Avestas (ingen känd regel) och Sandvikens (en natt = inte camping) ordningsföreskrifter är en natt sannolikt ok. Skyltning på parkeringen avgör.",
+        },
+        {
+          ref: "Länsstyrelsen Gävleborg",
+          text: "“Du får inte ta med en okopplad hund in i nationalparken.” Tillträdesförbud gäller i fågelskyddsområden och nyligen naturvårdsbrända områden delar av året.",
+        },
+        {
+          ref: "Entréer",
+          text: "Huvudentré Sevedskvarn, östra entrén Skekarsbo, västra entrén Tyttbo, södra entrén Öberget samt naturum i Gysinge bruk.",
+        },
+      ],
+      link: "sverigesnationalparker.se – Färnebofjärdens nationalpark",
+    },
+    nearby: [
+      { name: "Huvudentré Sevedskvarn", distance: "Nedre Dalälven", price: "Parkering · entré" },
+      { name: "naturum Färnebofjärden", distance: "Gysinge bruk", price: "Besökscenter · aktiviteter" },
+      { name: "56:ans Café (ställplats)", distance: "Stationsgatan 8, Avesta", price: "30 platser · 75 kr · året runt" },
+    ],
+    mapPins: [
+      { id: "p1", kind: "rapport", name: "Huvudentré Sevedskvarn", note: "Parkering · startpunkt för leder · kontrollera skyltning för övernattning", x: 45, y: 40 },
+      { id: "p2", kind: "rapport", name: "naturum Gysinge", note: "Besökscenter i Gysinge bruk · kartor och information om tillträdesförbud", x: 62, y: 52 },
+      { id: "p3", kind: "stallplats", name: "56:ans Café", note: "Stationsgatan 8, Avesta · 30 platser · 75 kr · året runt · säkrare alternativ", x: 30, y: 72 },
+    ],
+  },
 ];
 
 const STATUS_STYLE = {
