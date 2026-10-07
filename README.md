@@ -20,10 +20,24 @@ App-prototyp som avgör om husbilar och husvagnar får övernatta på en plats �
 
 SCB tätorter 290/290, trafikföreskrifter 290/290, detaljplaner i NGP 252/290, stadga med campingregel ~210/290 (uppskattning).
 
+## Datakällor och licenser
+
+| Källa | Användning | Licens |
+|---|---|---|
+| SCB – Statistiska tätorter | Tätortskontroll (detaljplansbedömning vid GPS) | CC0 1.0 (scb.se) – fri användning, ingen källa krävs |
+| OpenStreetMap / Nominatim | Reverse geocoding → kommun vid GPS | ODbL 1.0 – "Data © OpenStreetMap contributors"; attribution visas i appen; publika API:et får inte bulkanropas och är ingen generisk geocoding-tjänst |
+| Naturvårdsregistret (NVR, Naturvårdsverket) | Skyddade områden (reservat/nationalparker) – planerat geolager | CC0 (geodata.naturvardsverket.se) |
+| Lantmäteriet öppna data / NGP | Detaljplansgränser – planerat lager | CC0 för öppna geodata; detaljplaner i NGP har egna villkor per datamängd |
+| Ordningsföreskrifter, reservatsföreskrifter, STFS, myndighetstexter | Regeltexter med citat | Ej upphovsrättsskyddade (författningar/offentliga handlingar) – citeras med källhänvisning |
+| husbil.se, kommunala ställplatssidor | Ställplatsregister (faktauppgifter) | Ingen öppen licens – enskilda uppgifter citeras med källa; bulkkopiering undviks; långsiktigt ersätts av eget register + användarrapporter |
+
+Not: citat ur föreskrifter återges ordagrant och får inte redigeras. Licensen för ODbL innebär "share alike" för större OSM-härledda datamängder – appen använder endast enskilda reverse geocoding-svar (kommunnamn), vilket i praktiken ligger under fair use, men attribution visas ändå.
+
 ## Nästa steg
 
 - Server-side proxy mot SCB GeoServer (punkt-i-polygon mot tätorter, istället för Nominatim-proxy).
 - Komplettera granskade kommuner (ordningsstadgor) – Ockelbo, Sandviken, Hedemora och Avesta är klara.
+- Fler granskade skyddade områden (naturreservat/nationalparker) – första omgången klar: Trollberget, Lundbosjön, Västerhällarna och Färnebofjärdens nationalpark. Geografin kan hämtas från Naturvårdsregistrets öppna WFS/REST-tjänster (CC0) för punkt-i-polygon.
 - Wrapa som Android-app: Capacitor ger .apk utan Google Play; PWA är en enklare mellanlösning.
 
 Koden är genererad i Vibe Work (Mistral AI).
